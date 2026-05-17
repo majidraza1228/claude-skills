@@ -35,15 +35,52 @@ cp skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
 
 ## Included Skills
 
+### Daily Development Workflow
+
 | Skill | What It Does |
 |-------|-------------|
-| [code-review](skills/code-review/SKILL.md) | Structured code review with severity table and verdict |
+| [planning](skills/planning/SKILL.md) | Break features into tasks with done criteria and dependencies |
+| [code-explain](skills/code-explain/SKILL.md) | Explain unfamiliar code, algorithms, or regex at the right depth |
+| [debugging](skills/debugging/SKILL.md) | 5-step bug triage: reproduce → localize → reduce → fix → guard |
+| [refactor](skills/refactor/SKILL.md) | Simplify code without changing behavior (Chesterton's Fence rule) |
+| [performance](skills/performance/SKILL.md) | Measure-first optimization: N+1 queries, caching, profiling |
+
+### Code Quality & Review
+
+| Skill | What It Does |
+|-------|-------------|
+| [code-review](skills/code-review/SKILL.md) | Structured review with severity table (CRITICAL/WARNING/NIT) and verdict |
+| [security](skills/security/SKILL.md) | OWASP Top 10 security review — flags critical issues before merge |
+| [tdd](skills/tdd/SKILL.md) | Red-green-refactor TDD with test pyramid and worked examples |
+
+### Git & Release
+
+| Skill | What It Does |
+|-------|-------------|
 | [commit-message](skills/commit-message/SKILL.md) | Conventional commit formatting with worked examples |
-| [doc-generator](skills/doc-generator/SKILL.md) | Generate documentation from code |
+| [pr-description](skills/pr-description/SKILL.md) | PR body with what/why, test steps, and reviewer notes |
+| [changelog](skills/changelog/SKILL.md) | Keep a Changelog format from commit list or git log |
+
+### Data & APIs
+
+| Skill | What It Does |
+|-------|-------------|
 | [api-design](skills/api-design/SKILL.md) | Contract-first API design with breaking change assessment |
-| [security](skills/security/SKILL.md) | OWASP Top 10 security review with critical/warning severity |
-| [tdd](skills/tdd/SKILL.md) | Red-green-refactor TDD with test pyramid reference |
-| [fitness-coach](skills/fitness-coach/safety/SKILL.md) | Example of splitting a long skill into sub-skills |
+| [sql](skills/sql/SKILL.md) | Write and optimize SQL queries safely (with guards for DELETE/UPDATE) |
+| [database-schema](skills/database-schema/SKILL.md) | Schema design with migration + rollback scripts |
+
+### Observability
+
+| Skill | What It Does |
+|-------|-------------|
+| [logging](skills/logging/SKILL.md) | Structured logging: what to log, what to redact, log levels |
+| [doc-generator](skills/doc-generator/SKILL.md) | Generate documentation from code |
+
+### Examples
+
+| Skill | What It Does |
+|-------|-------------|
+| [fitness-coach](skills/fitness-coach/safety/SKILL.md) | Shows how to split a long skill into focused sub-skills |
 
 ## Multi-Tool Support
 
