@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test outputs
+test*_run*.txt
+test*_structure*.txt
+docs/audit-baseline.txt

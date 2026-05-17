@@ -1,0 +1,44 @@
+name: Skill Lint
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**/*.md'
+
+jobs:
+  lint-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Lint changed skills
+        run: |
+          # Get list of changed SKILL.md files
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD | grep 'SKILL.md' || true)
+
+          if [ -z "$CHANGED" ]; then
+            echo "No SKILL.md files changed"
+            exit 0
+          fi
+
+          echo "Linting changed skills:"
+          echo "$CHANGED"
+          echo ""
+
+          FAILED=0
+          for f in $CHANGED; do
+            if [ -f "$f" ]; then
+              ./scripts/lint-skill.sh "$f" || FAILED=1
+              echo ""
+            fi
+          done
+
+          exit $FAILED
+
+      - name: Full audit (informational)
+        if: always()
+        run: |
+          ./scripts/audit-skills.sh skills/ || true
