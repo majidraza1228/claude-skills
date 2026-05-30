@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Development & Harness Engineering — AI-Powered Dev & PM Playbook</title>
+<meta name="description" content="Complete guide to agentic coding: memory types, eval harnesses, frameworks, and how to apply skills in agent workflows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ── Page layout with sticky sidebar ── */
+.agentic-layout{display:grid;grid-template-columns:220px 1fr;gap:0 3.5rem;align-items:start;margin-top:3rem}
+@media(max-width:1080px){.agentic-layout{grid-template-columns:1fr}}
+.agentic-sidebar{position:sticky;top:calc(var(--nav-h) + 1.5rem)}
+@media(max-width:1080px){.agentic-sidebar{display:none}}
+.as-section-label{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding:.3rem .5rem;margin-top:1rem}
+.as-section-label:first-child{margin-top:0}
+.as-item{display:flex;align-items:center;gap:.65rem;padding:.42em .55em;border-radius:8px;cursor:pointer;text-decoration:none;border:1px solid transparent;transition:all .15s}
+.as-item:hover{background:var(--surface);border-color:var(--border)}
+.as-item.active{background:var(--accent-dim);border-color:rgba(34,197,94,.25)}
+.as-item.active .as-dot{background:var(--accent)}
+.as-item.active .as-label{color:var(--text-primary)}
+.as-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .15s}
+.as-label{font-size:.82rem;font-weight:600;color:var(--text-secondary);transition:color .15s}
+
+/* ── Section anchors ── */
+.ag-section{padding-top:1rem;margin-bottom:4rem}
+.ag-section:last-child{margin-bottom:0}
+.ag-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;display:block}
+.ag-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.6rem}
+.ag-lead{font-size:.97rem;color:var(--text-secondary);line-height:1.6;max-width:60ch;margin-bottom:1.8rem}
+
+/* ── Concept + Apply layout ── */
+.apply-box{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:1.2rem 1.5rem;margin-top:2rem;display:grid;grid-template-columns:auto 1fr;gap:.8rem 1rem;align-items:start}
+.apply-icon{width:38px;height:38px;border-radius:10px;background:var(--accent-dim);display:grid;place-items:center;font-size:1.05rem;flex-shrink:0}
+.apply-body h4{font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:.25rem}
+.apply-body p{font-size:.87rem;color:rgba(255,255,255,.75);line-height:1.5}
+.apply-body code{background:rgba(255,255,255,.08);padding:.1em .35em;border-radius:4px;font-size:.85em}
+
+/* ── Memory type cards ── */
+.memory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem}
+@media(max-width:700px){.memory-grid{grid-template-columns:1fr}}
+.mem-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem}
+.mem-card-hd{display:flex;align-items:center;gap:.65rem;margin-bottom:.7rem}
+.mem-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.mem-name{font-weight:700;font-size:.95rem}
+.mem-sub{font-size:.82rem;color:var(--text-secondary);line-height:1.45;margin-bottom:.7rem}
+.mem-example{font-size:.8rem;font-family:'Menlo','Monaco',monospace;color:var(--accent);background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:6px;padding:.5rem .75rem;line-height:1.5}
+
+/* ── Framework comparison ── */
+.fw-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem}
+@media(max-width:700px){.fw-grid{grid-template-columns:1fr}}
+.fw-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;transition:border-color .18s}
+.fw-card:hover{border-color:rgba(255,255,255,.22)}
+.fw-name{font-weight:700;font-size:1rem;margin-bottom:.2rem}
+.fw-tag{display:inline-block;padding:.15em .6em;border-radius:999px;font-size:.72rem;font-weight:700;margin-bottom:.6rem}
+.fw-tag.best{background:var(--accent-dim);color:var(--accent)}
+.fw-tag.good{background:rgba(100,160,255,.12);color:rgba(150,200,255,.9)}
+.fw-tag.complex{background:rgba(255,165,0,.1);color:rgba(255,200,100,.9)}
+.fw-desc{font-size:.87rem;color:var(--text-secondary);line-height:1.5;margin-bottom:.7rem}
+.fw-when{font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.4}
+.fw-when strong{color:rgba(255,255,255,.8)}
+
+/* ── Harness test types ── */
+.harness-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+@media(max-width:800px){.harness-grid{grid-template-columns:1fr}}
+.htest-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem}
+.htest-label{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.htest-label.golden{color:#fbbf24}
+.htest-label.adversarial{color:#f87171}
+.htest-label.consistency{color:rgba(150,200,255,.9)}
+.htest-name{font-weight:700;font-size:.95rem;margin-bottom:.35rem}
+.htest-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.45}
+
+/* ── Agent loop diagram ── */
+.loop-diagram{display:flex;align-items:center;justify-content:center;gap:0;margin:1.5rem 0;flex-wrap:wrap;row-gap:.8rem}
+.loop-node{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem 1.1rem;font-size:.85rem;font-weight:700;text-align:center;min-width:90px}
+.loop-node.accent{background:var(--accent-dim);border-color:rgba(34,197,94,.3);color:var(--accent)}
+.loop-arrow{color:var(--text-secondary);font-size:1.1rem;padding:0 .5rem;flex-shrink:0}
+
+/* ── Step divider ── */
+.ag-divider{border:none;border-top:1px solid var(--border);margin:3rem 0}
+
+/* ── Inline warning box ── */
+.warn-box{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:1rem 1.2rem;font-size:.9rem;color:rgba(255,255,255,.8);line-height:1.5;margin:.9rem 0}
+.warn-box strong{color:#f87171}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">Playbook</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="skills.html" class="hide-sm">Skills</a>
+    <a href="tools.html" class="hide-sm">Tools</a>
+    <a href="patterns.html" class="hide-sm">Patterns</a>
+    <a href="guide.html" class="hide-sm">Guide</a>
+    <a href="agentic.html" class="active">Agentic</a>
+    <a href="https://github.com/majidraza1228/claude-skills" class="nav-gh" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+<div class="container section">
+
+  <div class="section-header">
+    <span class="eyebrow">Agentic development</span>
+    <h1 class="page-title">Build agents that work reliably</h1>
+    <p class="page-lead">Memory, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
+  </div>
+
+  <div class="agentic-layout">
+
+    <!-- STICKY SIDEBAR -->
+    <aside class="agentic-sidebar">
+      <div class="as-section-label">Foundations</div>
+      <a class="as-item" href="#what-is-agentic" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is agentic coding</div></a>
+      <a class="as-item" href="#agent-loop" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">The agent loop</div></a>
+      <div class="as-section-label">Memory</div>
+      <a class="as-item" href="#memory-types" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">5 memory types</div></a>
+      <a class="as-item" href="#memory-architecture" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Architecting memory</div></a>
+      <a class="as-item" href="#memory-best-practices" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Memory best practices</div></a>
+      <div class="as-section-label">Harness engineering</div>
+      <a class="as-item" href="#why-harness" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Why you need a harness</div></a>
+      <a class="as-item" href="#test-types" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">3 test types</div></a>
+      <a class="as-item" href="#build-harness" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Build the harness</div></a>
+      <a class="as-item" href="#ci-gate" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">CI gate</div></a>
+      <div class="as-section-label">Frameworks</div>
+      <a class="as-item" href="#frameworks" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Which framework</div></a>
+      <div class="as-section-label">Apply it</div>
+      <a class="as-item" href="#skills-in-agents" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Skills inside agents</div></a>
+      <a class="as-item" href="#production" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Production checklist</div></a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div>
+
+      <!-- ── WHAT IS AGENTIC CODING ── -->
+      <div class="ag-section" id="what-is-agentic">
+        <span class="ag-eyebrow">Foundations</span>
+        <h2 class="ag-title">What is agentic coding?</h2>
+        <p class="ag-lead">A single prompt is a request. An agent is a loop. It plans, acts, observes the result, and decides what to do next — autonomously, using tools and memory.</p>
+
+        <div class="warn-box"><strong>Vibe coding</strong> treats every AI interaction as a one-shot prompt. You ask, it answers, you move on. There's no loop, no verification, no accountability. This breaks at scale.</div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-top:1rem">
+          <table class="trigger-table" style="font-size:.87rem">
+            <thead><tr><th>Approach</th><th>How it works</th><th>Failure mode</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Prompt</strong></td><td>Ask once, accept the answer</td><td>No verification — bugs ship</td></tr>
+              <tr><td><strong>Skill</strong></td><td>Structured procedure, consistent output</td><td>No loop — one task at a time</td></tr>
+              <tr><td><strong>Agent</strong></td><td>Plan → act → verify → loop</td><td>Needs harness or it drifts</td></tr>
+              <tr><td><strong>Skill + Agent</strong></td><td>Agent runs reliable sub-procedures</td><td>Correct approach ✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── AGENT LOOP ── -->
+      <div class="ag-section" id="agent-loop">
+        <span class="ag-eyebrow">Foundations</span>
+        <h2 class="ag-title">The agent loop</h2>
+        <p class="ag-lead">Every reliable agent follows a loop. The skill is knowing when to stop, when to ask for confirmation, and when to hand off.</p>
+
+        <div class="loop-diagram">
+          <div class="loop-node accent">Goal</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Plan</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Act</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Observe</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Verify</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node accent">Done / Loop</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">agent_loop.py — minimal pattern</span></div>
+          <div class="code-body"><span class="c-comment"># Goal → Plan → Act → Observe → Verify → Loop</span>
+import anthropic
+
+client = anthropic.Anthropic()
+
+def run_agent(goal: str, tools: list, max_steps: int = 10):
+    messages = [{"role": "user", "content": goal}]
+
+    for step in range(max_steps):
+        response = client.messages.create(
+            model=<span class="c-str">"claude-sonnet-4-6"</span>,
+            max_tokens=<span class="c-accent">4096</span>,
+            tools=tools,
+            messages=messages
+        )
+
+        <span class="c-comment"># Agent is done — no more tool calls</span>
+        if response.stop_reason == <span class="c-str">"end_turn"</span>:
+            return response.content[0].text
+
+        <span class="c-comment"># Execute tool calls and feed results back</span>
+        tool_results = execute_tools(response.content)
+        messages.append({"role": "assistant", "content": response.content})
+        messages.append({"role": "user", "content": tool_results})
+
+    raise RuntimeError(<span class="c-str">f"Agent exceeded {max_steps} steps"</span>)</div>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">⚡</div>
+          <div class="apply-body">
+            <h4>Apply it with the planning skill</h4>
+            <p>Before building an agent, use <code>/planning</code> to break the goal into steps with dependencies. The output becomes your agent's execution plan. Say: <code>"plan this agent: code review bot that reads a PR, runs security checks, and posts a comment"</code></p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── MEMORY TYPES ── -->
+      <div class="ag-section" id="memory-types">
+        <span class="ag-eyebrow">Memory</span>
+        <h2 class="ag-title">5 types of agent memory</h2>
+        <p class="ag-lead">Memory is what makes an agent useful across sessions. Most developers implement only one type — and wonder why their agent forgets everything. Here's the full picture.</p>
+
+        <div class="memory-grid">
+          <div class="mem-card">
+            <div class="mem-card-hd">
+              <div class="mem-icon" style="background:rgba(100,160,255,.12)">💬</div>
+              <div class="mem-name">In-context memory</div>
+            </div>
+            <div class="mem-sub">The conversation history in the current session. Temporary — lost when the session ends. Cheap and fast but limited by context window size.</div>
+            <div class="mem-example">messages = [{"role":"user","content":"..."}]<br># grows each turn — watch token cost</div>
+          </div>
+
+          <div class="mem-card">
+            <div class="mem-card-hd">
+              <div class="mem-icon" style="background:rgba(160,100,255,.12)">📁</div>
+              <div class="mem-name">External / file memory</div>
+            </div>
+            <div class="mem-sub">Persistent files the agent reads and writes. Survives sessions. Use for: TEAM.md (sprint state), CLAUDE.md (project rules), decision logs, user preferences.</div>
+            <div class="mem-example">~/.claude/projects/.../memory/<br>CLAUDE.md, TEAM.md, decisions/log.md</div>
+          </div>
+
+          <div class="mem-card">
+            <div class="mem-card-hd">
+              <div class="mem-icon" style="background:rgba(34,197,94,.1)">🔍</div>
+              <div class="mem-name">Semantic memory (RAG)</div>
+            </div>
+            <div class="mem-sub">Embeddings in a vector store. Agent retrieves relevant past context by meaning, not keyword. Use for: large codebases, docs, past decisions, knowledge bases.</div>
+            <div class="mem-example">ChromaDB (local) / Pinecone (prod)<br>embed → store → retrieve on query</div>
+          </div>
+
+          <div class="mem-card">
+            <div class="mem-card-hd">
+              <div class="mem-icon" style="background:rgba(251,191,36,.1)">📋</div>
+              <div class="mem-name">Procedural memory (skills)</div>
+            </div>
+            <div class="mem-sub">SKILL.md files the agent loads to know HOW to do a task. Skills are your agent's standard operating procedures — loaded on demand, consistent every run.</div>
+            <div class="mem-example">~/.claude/skills/code-review/SKILL.md<br>/planning, /tdd, /harness-engineering</div>
+          </div>
+
+          <div class="mem-card" style="grid-column:span 2">
+            <div class="mem-card-hd">
+              <div class="mem-icon" style="background:rgba(248,113,113,.1)">📓</div>
+              <div class="mem-name">Episodic memory (logs)</div>
+            </div>
+            <div class="mem-sub">A record of what the agent did, when, and what happened. Use for: audit trails, debugging agent failures, feeding into future planning. TEAM.md is an example — structured log of daily check-ins.</div>
+            <div class="mem-example">TEAM.md, decisions/log.md, output/run-2026-05-30.md<br># structured entries agent can re-read next session</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── ARCHITECTING AI MEMORY ── -->
+      <div class="ag-section" id="memory-architecture">
+        <span class="ag-eyebrow">Memory</span>
+        <h2 class="ag-title">Architecting AI memory</h2>
+        <p class="ag-lead">Choosing the wrong memory layer is the most common cause of agents that feel unreliable. Use the decision tree below to pick the right type — then design the data model before you write any code.</p>
+
+        <!-- Decision table -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:1.5rem">
+          <table class="trigger-table" style="font-size:.85rem">
+            <thead><tr><th>What you need to store</th><th>Lifetime</th><th>Pick this</th><th>Implementation</th></tr></thead>
+            <tbody>
+              <tr><td>Current task context, tool calls</td><td>This session only</td><td><strong>In-context</strong></td><td><code>messages[]</code> array</td></tr>
+              <tr><td>Project rules, hard constraints</td><td>All sessions, rarely changes</td><td><strong>CLAUDE.md / file</strong></td><td>~/.claude/projects/.../CLAUDE.md</td></tr>
+              <tr><td>User preferences, past feedback</td><td>All sessions, slow change</td><td><strong>File memory</strong></td><td>memory/user.md, memory/feedback-*.md</td></tr>
+              <tr><td>Sprint state, active decisions</td><td>Days to weeks</td><td><strong>File memory</strong></td><td>memory/project-*.md, TEAM.md</td></tr>
+              <tr><td>Large codebase, docs, past PRs</td><td>Persistent, high volume</td><td><strong>Semantic / RAG</strong></td><td>ChromaDB (local), Pinecone (prod)</td></tr>
+              <tr><td>How to do a task (procedures)</td><td>Permanent SOPs</td><td><strong>Skills</strong></td><td>~/.claude/skills/&lt;name&gt;/SKILL.md</td></tr>
+              <tr><td>What happened last run</td><td>Audit / debug trail</td><td><strong>Episodic log</strong></td><td>output/run-YYYY-MM-DD.md</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Memory lifecycle -->
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.8rem">Memory lifecycle</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">Every piece of memory follows the same lifecycle. Skipping the Verify and Prune steps is how stale memory accumulates — agents then act on outdated facts.</p>
+
+        <div class="loop-diagram" style="margin-bottom:1.5rem">
+          <div class="loop-node accent">Write</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Read</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Verify</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node">Prune</div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node accent">Update / Archive</div>
+        </div>
+
+        <!-- File structure -->
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.8rem">Memory file structure</h3>
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">project memory layout</span></div>
+          <div class="code-body">~/.claude/projects/&lt;project-slug&gt;/
+├── MEMORY.md                  <span class="c-comment"># index — loaded every session, keep under 200 lines</span>
+└── memory/
+    ├── user_role.md            <span class="c-comment"># who the user is, expertise, preferences</span>
+    ├── feedback_testing.md     <span class="c-comment"># corrections and confirmed approaches</span>
+    ├── project_auth.md         <span class="c-comment"># why auth is implemented this way</span>
+    ├── project_sprint.md       <span class="c-comment"># active sprint state — prune weekly</span>
+    └── reference_linear.md     <span class="c-comment"># where to find things in external systems</span>
+
+CLAUDE.md                      <span class="c-comment"># project root — stack, hard rules, decisions, refs</span>
+output/
+└── run-2026-05-30.md          <span class="c-comment"># episodic log — what happened this session</span></div>
+        </div>
+
+        <!-- Python helpers -->
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">memory_manager.py — read / write helpers</span></div>
+          <div class="code-body"><span class="c-comment">"""Minimal memory layer: reads MEMORY.md index + loads referenced files."""</span>
+from pathlib import Path
+import anthropic
+
+MEMORY_DIR = Path(<span class="c-str">"~/.claude/projects/my-project/memory"</span>).expanduser()
+
+def load_memory(types: list[str] = None) -&gt; str:
+    <span class="c-comment">"""Read relevant memory files into a string for the system prompt."""</span>
+    index = (MEMORY_DIR.parent / <span class="c-str">"MEMORY.md"</span>).read_text()
+    entries = []
+    for f in MEMORY_DIR.glob(<span class="c-str">"*.md"</span>):
+        <span class="c-comment"># Filter by type prefix (user_, feedback_, project_, reference_)</span>
+        if types is None or any(f.stem.startswith(t) for t in types):
+            entries.append(f<span class="c-str">"\n\n## {f.stem}\n"</span> + f.read_text())
+    return index + <span class="c-str">"\n"</span>.join(entries)
+
+def save_memory(slug: str, memory_type: str, content: str) -&gt; None:
+    <span class="c-comment">"""Write a named memory file and update the MEMORY.md index."""</span>
+    fname = MEMORY_DIR / f<span class="c-str">"{memory_type}_{slug}.md"</span>
+    fname.write_text(content)
+    <span class="c-comment"># Update index (simplified — in practice, parse and upsert)</span>
+    index_path = MEMORY_DIR.parent / <span class="c-str">"MEMORY.md"</span>
+    current = index_path.read_text() if index_path.exists() else <span class="c-str">""</span>
+    entry = f<span class="c-str">"- [{slug}](memory/{fname.name}) — {memory_type}\n"</span>
+    if entry not in current:
+        index_path.write_text(current + entry)
+
+<span class="c-comment"># Usage: inject relevant memory as extra system context</span>
+memory_ctx = load_memory(types=[<span class="c-str">"user"</span>, <span class="c-str">"feedback"</span>])
+response = client.messages.create(
+    model=<span class="c-str">"claude-sonnet-4-6"</span>,
+    system=base_system_prompt + <span class="c-str">"\n\n---\n# Memory\n"</span> + memory_ctx,
+    messages=messages
+)</div>
+        </div>
+
+        <!-- Multi-agent sharing -->
+        <h3 style="font-size:1rem;font-weight:700;margin:.1.5rem 0 .8rem">Multi-agent memory sharing</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">When multiple agents share state, the key rule is: <strong style="color:var(--text-primary)">one writer, many readers</strong>. Race conditions corrupt memory files the same way they corrupt databases.</p>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table" style="font-size:.85rem">
+            <thead><tr><th>Pattern</th><th>When to use</th><th>Risk to avoid</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Shared CLAUDE.md</strong></td><td>All agents read the same project rules</td><td>Never let a sub-agent write to it — only the orchestrator</td></tr>
+              <tr><td><strong>Agent-scoped files</strong></td><td>Each agent writes to its own log file</td><td>Don't merge at runtime — let the orchestrator aggregate</td></tr>
+              <tr><td><strong>Central state file</strong></td><td>Single file for shared task state (e.g. sprint.md)</td><td>Use a file lock or pass state through the orchestrator, not file I/O</td></tr>
+              <tr><td><strong>Vector store (RAG)</strong></td><td>Many agents read a shared knowledge base</td><td>Queue writes — concurrent embedding jobs corrupt indexes</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="apply-box" style="margin-top:1.5rem">
+          <div class="apply-icon">🗂</div>
+          <div class="apply-body">
+            <h4>Apply it — let Claude scaffold your memory structure</h4>
+            <p>Tell Claude what your agent does and ask it to design the memory layout: <code>"I'm building a code review agent that runs on PRs. Design my memory file structure — what goes in CLAUDE.md vs memory/*.md vs a vector store."</code></p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── MEMORY BEST PRACTICES ── -->
+      <div class="ag-section" id="memory-best-practices">
+        <span class="ag-eyebrow">Memory</span>
+        <h2 class="ag-title">Memory best practices</h2>
+        <p class="ag-lead">Most agent memory problems are not technical — they're about what you choose to store and what you don't.</p>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table">
+            <thead><tr><th>Rule</th><th>Why</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Store WHY, not WHAT</strong></td><td>The code shows what exists. Memory needs to explain the decision behind it</td><td>"Using bcrypt because MD5 was flagged in security audit — do not revert"</td></tr>
+              <tr><td><strong>Prune stale memory</strong></td><td>Old memories mislead agents — they act on things that are no longer true</td><td>After a refactor, remove architecture memories that describe deleted code</td></tr>
+              <tr><td><strong>Don't duplicate git</strong></td><td>git log and git blame are authoritative for history — don't replicate them in memory files</td><td>Use <code>git log</code> instead of storing "we added caching on May 30"</td></tr>
+              <tr><td><strong>Keep CLAUDE.md short</strong></td><td>It loads into every session — long files consume tokens on every request</td><td>Under 200 lines. If it grows, split into reference files and load on demand</td></tr>
+              <tr><td><strong>One file per memory type</strong></td><td>Mixing user preferences, project state, and references in one file makes pruning hard</td><td>user.md, feedback-testing.md, project-auth.md, reference-linear.md</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block" style="margin-top:1.2rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">CLAUDE.md — correct structure</span></div>
+          <div class="code-body"><span class="c-comment"># Stack (what the agent needs to know about the environment)</span>
+Python 3.12, FastAPI, PostgreSQL, Redis, Docker
+
+<span class="c-comment"># Never do (hard constraints — agent must not violate these)</span>
+- Never use SQLite, even in tests
+- Never commit .env files
+- Never skip tests when adding business logic
+- Never amend published commits
+
+<span class="c-comment"># Always do (defaults the agent should apply)</span>
+- Read the file before editing it
+- Use structured outputs (tool_use / JSON) not free text
+- Write the test before the implementation
+
+<span class="c-comment"># Project decisions (the WHY behind current choices)</span>
+- Auth uses bcrypt: switched from MD5 after security audit Q1 2026
+- No ORM: raw SQL for performance, all queries in db/queries/
+
+<span class="c-comment"># References (where to find things)</span>
+- Sprint tasks: Linear project CORE
+- Incidents: PagerDuty, escalate to #oncall-eng in Slack</div>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">🧠</div>
+          <div class="apply-body">
+            <h4>Apply it — trigger memory in Claude Code</h4>
+            <p>Tell Claude to remember decisions as you make them: <code>"remember: we chose Redis over Memcached because we need pub/sub for the notification system"</code> — it saves to the project memory file and recalls it in future sessions automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── WHY HARNESS ── -->
+      <div class="ag-section" id="why-harness">
+        <span class="ag-eyebrow">Harness engineering</span>
+        <h2 class="ag-title">Why you need an eval harness</h2>
+        <p class="ag-lead">AI output is non-deterministic. The same prompt can produce different output next week — because the model changed, the context changed, or you changed the skill. Without a harness, you discover breakage in production.</p>
+
+        <div class="warn-box"><strong>The silent failure:</strong> You update a skill prompt. Your code-review agent now misses SQL injection vulnerabilities because the CRITICAL severity rule shifted from line 40 to line 450 after the edit. Tests never ran. The next PR merges with a security hole. This is not theoretical — it happened.</div>
+
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">without a harness</span></div>
+          <div class="code-body"><span class="c-comment"># Monday: skill works perfectly</span>
+result = run_skill(<span class="c-str">"code-review"</span>, code_with_sqli)
+<span class="c-comment"># → returns CRITICAL: SQL injection</span>
+
+<span class="c-comment"># Tuesday: you edit the skill description</span>
+<span class="c-comment"># Friday: silent regression discovered in prod</span>
+result = run_skill(<span class="c-str">"code-review"</span>, code_with_sqli)
+<span class="c-comment"># → returns WARNING: consider parameterized queries</span>
+<span class="c-comment"># → CRITICAL rule is now buried past line 400 — never fires</span></div>
+        </div>
+
+        <p style="font-size:.93rem;color:var(--text-secondary);line-height:1.6;margin-top:1rem">A harness catches this before merge. It runs the same inputs against the same skill and asserts the output meets defined criteria — every time, in CI.</p>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── TEST TYPES ── -->
+      <div class="ag-section" id="test-types">
+        <span class="ag-eyebrow">Harness engineering</span>
+        <h2 class="ag-title">3 test types every harness needs</h2>
+
+        <div class="harness-grid">
+          <div class="htest-card">
+            <div class="htest-label golden">Golden test</div>
+            <div class="htest-name">Expected output</div>
+            <div class="htest-desc">Given a known input, assert the output contains specific strings, structure, or fields. Catches regressions where the skill stops producing required content.</div>
+          </div>
+          <div class="htest-card">
+            <div class="htest-label adversarial">Adversarial test</div>
+            <div class="htest-name">Safety rules fire</div>
+            <div class="htest-desc">Give the skill an input that should trigger a safety rule or hard constraint. Assert the rule fires. Catches cases where critical rules get buried and stop executing.</div>
+          </div>
+          <div class="htest-card">
+            <div class="htest-label consistency">Consistency test</div>
+            <div class="htest-name">Format doesn't drift</div>
+            <div class="htest-desc">Run the same prompt 3× and compare output structure. If the format changes between runs, the skill lacks a strong enough output template (Pattern 5).</div>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top:1.2rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">tests/code_review_harness.yaml</span></div>
+          <div class="code-body"><span class="c-accent">golden_tests</span>:
+  - name: detects sql injection
+    input: <span class="c-str">"SELECT * FROM users WHERE id = " + user_input</span>
+    assert_contains:
+      - <span class="c-str">"CRITICAL"</span>
+      - <span class="c-str">"SQL injection"</span>
+    assert_not_contains:
+      - <span class="c-str">"NIT"</span>  <span class="c-comment"># SQL injection must never be downgraded</span>
+
+  - name: clean code gets approve verdict
+    input: <span class="c-str">"def add(a: int, b: int) -> int: return a + b"</span>
+    assert_contains:
+      - <span class="c-str">"APPROVE"</span>
+    assert_not_contains:
+      - <span class="c-str">"CRITICAL"</span>
+      - <span class="c-str">"WARNING"</span>
+
+<span class="c-accent">adversarial_tests</span>:
+  - name: hardcoded secret triggers critical
+    input: <span class="c-str">"API_KEY = 'sk-abc123'"</span>
+    assert_contains:
+      - <span class="c-str">"CRITICAL"</span>
+      - <span class="c-str">"secret"</span>
+
+<span class="c-accent">consistency_tests</span>:
+  - name: severity table always present
+    input: <span class="c-str">"x = eval(user_input)"</span>
+    runs: <span class="c-accent">3</span>
+    assert_all_contain:
+      - <span class="c-str">"| CRITICAL |"</span>  <span class="c-comment"># table must appear every run</span></div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── BUILD THE HARNESS ── -->
+      <div class="ag-section" id="build-harness">
+        <span class="ag-eyebrow">Harness engineering</span>
+        <h2 class="ag-title">Build the harness</h2>
+        <p class="ag-lead">The harness is a Python script that loads your YAML test cases, runs each against the live skill, and asserts the results. It takes about an hour to build the first time.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">tests/runner.py</span></div>
+          <div class="code-body">import yaml, anthropic, pathlib, sys
+from difflib import unified_diff
+
+client = anthropic.Anthropic()
+
+def load_skill(name: str) -> str:
+    skill_path = pathlib.Path.home() / <span class="c-str">f".claude/skills/{name}/SKILL.md"</span>
+    return skill_path.read_text()
+
+def run_skill(skill_name: str, user_input: str) -> str:
+    skill = load_skill(skill_name)
+    response = client.messages.create(
+        model=<span class="c-str">"claude-sonnet-4-6"</span>,
+        max_tokens=<span class="c-accent">2048</span>,
+        system=skill,
+        messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: user_input}]
+    )
+    return response.content[0].text
+
+def run_harness(skill_name: str, test_file: str) -> bool:
+    tests = yaml.safe_load(pathlib.Path(test_file).read_text())
+    failures = []
+
+    <span class="c-comment"># Golden tests</span>
+    for t in tests.get(<span class="c-str">"golden_tests"</span>, []):
+        result = run_skill(skill_name, t[<span class="c-str">"input"</span>])
+        for expected in t.get(<span class="c-str">"assert_contains"</span>, []):
+            if expected not in result:
+                failures.append(f<span class="c-str">"FAIL [{t['name']}]: missing '{expected}'"</span>)
+        for banned in t.get(<span class="c-str">"assert_not_contains"</span>, []):
+            if banned in result:
+                failures.append(f<span class="c-str">"FAIL [{t['name']}]: found banned '{banned}'"</span>)
+
+    <span class="c-comment"># Adversarial tests (same logic, labeled differently)</span>
+    for t in tests.get(<span class="c-str">"adversarial_tests"</span>, []):
+        result = run_skill(skill_name, t[<span class="c-str">"input"</span>])
+        for expected in t.get(<span class="c-str">"assert_contains"</span>, []):
+            if expected not in result:
+                failures.append(f<span class="c-str">"FAIL [{t['name']}]: safety rule didn't fire — missing '{expected}'"</span>)
+
+    <span class="c-comment"># Consistency tests</span>
+    for t in tests.get(<span class="c-str">"consistency_tests"</span>, []):
+        runs = [run_skill(skill_name, t[<span class="c-str">"input"</span>]) for _ in range(t.get(<span class="c-str">"runs"</span>, 3))]
+        for required in t.get(<span class="c-str">"assert_all_contain"</span>, []):
+            if not all(required in r for r in runs):
+                failures.append(f<span class="c-str">"FAIL [{t['name']}]: inconsistent — '{required}' missing in some runs"</span>)
+
+    if failures:
+        print(<span class="c-str">"\n".join(failures)</span>)
+        return False
+
+    print(f<span class="c-str">"✓ All tests passed for {skill_name}"</span>)
+    return True
+
+if __name__ == <span class="c-str">"__main__"</span>:
+    ok = run_harness(<span class="c-str">"code-review"</span>, <span class="c-str">"tests/code_review_harness.yaml"</span>)
+    sys.exit(<span class="c-accent">0</span> if ok else <span class="c-accent">1</span>)</div>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">🧪</div>
+          <div class="apply-body">
+            <h4>Apply it — generate your harness with the skill</h4>
+            <p>Say: <code>"build an eval harness for my code-review skill"</code> — the <code>harness-engineering</code> skill generates the YAML test cases, Python runner, and CI config for your specific skill automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── CI GATE ── -->
+      <div class="ag-section" id="ci-gate">
+        <span class="ag-eyebrow">Harness engineering</span>
+        <h2 class="ag-title">CI gate — fail before merge, not after</h2>
+        <p class="ag-lead">The harness only matters if it runs automatically. Add it to GitHub Actions so every PR that touches a skill or a prompt runs the full test suite before merge is allowed.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">.github/workflows/skill-harness.yml</span></div>
+          <div class="code-body">name: Skill Harness
+
+on:
+  pull_request:
+    paths:
+      - <span class="c-str">'dev-pm-skills/**'</span>   <span class="c-comment"># run when any skill changes</span>
+      - <span class="c-str">'tests/**'</span>
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: <span class="c-str">'3.12'</span>
+
+      - name: Install deps
+        run: pip install anthropic pyyaml
+
+      - name: Install skills
+        run: ./scripts/install-skills.sh --global
+
+      - name: Run harness
+        env:
+          ANTHROPIC_API_KEY: <span class="c-str">${{ secrets.ANTHROPIC_API_KEY }}</span>
+        run: python tests/runner.py
+
+      - name: Post results
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: <span class="c-str">'⚠️ Skill harness failed. Check the Actions log for which tests broke.'</span>
+            })</div>
+        </div>
+
+        <div class="tip-box" style="margin-top:1rem"><strong>Pattern 9 in practice:</strong> Eval before merge, not after. This CI job is the technical implementation of that pattern. Every prompt change goes through the harness before it can merge. Regressions become impossible to miss.</div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── FRAMEWORKS ── -->
+      <div class="ag-section" id="frameworks">
+        <span class="ag-eyebrow">Frameworks</span>
+        <h2 class="ag-title">Which framework to use</h2>
+        <p class="ag-lead">Start with the raw Claude API. Add a framework only when you need what it provides. Most agents that "need LangChain" are just prompt chains with tool calls — which the API handles natively.</p>
+
+        <div class="fw-grid">
+          <div class="fw-card">
+            <div class="fw-name">Anthropic Claude API</div>
+            <span class="fw-tag best">Start here</span>
+            <div class="fw-desc">Native tool use, streaming, vision, and structured outputs. No framework overhead. Full control over the agent loop. Works directly with SKILL.md files as system prompts.</div>
+            <div class="fw-when"><strong>Use when:</strong> building a new agent, single-agent workflows, anything under 5 tools. The API handles 80% of real use cases without a framework.</div>
+          </div>
+
+          <div class="fw-card">
+            <div class="fw-name">Pydantic AI</div>
+            <span class="fw-tag best">Recommended for structured output</span>
+            <div class="fw-desc">Type-safe agent framework. Define your output schema as a Pydantic model — the agent is guaranteed to return valid structured data. Integrates cleanly with FastAPI.</div>
+            <div class="fw-when"><strong>Use when:</strong> your agent must return structured data (JSON, typed objects) that downstream code depends on. Pattern 8 (parse structure not text) made easy.</div>
+          </div>
+
+          <div class="fw-card">
+            <div class="fw-name">LangGraph</div>
+            <span class="fw-tag good">Complex workflows</span>
+            <div class="fw-desc">Graph-based state machine for agents. Each node is a function; edges define transitions. Built for multi-step workflows with branching, looping, and human-in-the-loop checkpoints.</div>
+            <div class="fw-when"><strong>Use when:</strong> your agent has complex branching logic, needs checkpointing/resume, or runs long multi-step workflows where you need to inspect and modify state mid-run.</div>
+          </div>
+
+          <div class="fw-card">
+            <div class="fw-name">CrewAI</div>
+            <span class="fw-tag good">Multi-agent teams</span>
+            <div class="fw-desc">Define agents as roles (Planner, Coder, Reviewer) with skills and goals. Agents collaborate, delegate, and hand off work. Each agent can use a different SKILL.md as its procedure.</div>
+            <div class="fw-when"><strong>Use when:</strong> you need multiple specialized agents working in parallel or sequence — e.g., a Planner agent + Implementer agent + Reviewer agent for automated PR review.</div>
+          </div>
+
+          <div class="fw-card">
+            <div class="fw-name">LangChain</div>
+            <span class="fw-tag complex">Use with caution</span>
+            <div class="fw-desc">High-level abstractions over LLM calls, chains, and tool use. Large ecosystem of integrations. But heavy, opinionated, and the abstractions often get in the way as your agent grows.</div>
+            <div class="fw-when"><strong>Use when:</strong> you need a specific integration it provides (vector stores, loaders) and can use just that component. Avoid for core agent logic — use the API or LangGraph instead.</div>
+          </div>
+
+          <div class="fw-card">
+            <div class="fw-name">Claude Code SDK</div>
+            <span class="fw-tag best">For coding agents</span>
+            <div class="fw-desc">Official SDK for building agents that run inside Claude Code. Gives sub-agents access to file tools, bash, and the full skill system. Ideal for CI/CD bots and code generation pipelines.</div>
+            <div class="fw-when"><strong>Use when:</strong> building an agent that reads/writes files, runs tests, or operates inside a codebase — not just an API client.</div>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top:1.2rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Pydantic AI — structured output example</span></div>
+          <div class="code-body">from pydantic import BaseModel
+from pydantic_ai import Agent
+
+class CodeReview(BaseModel):
+    verdict: str          <span class="c-comment"># APPROVE | REQUEST_CHANGES | REJECT</span>
+    critical_count: int
+    issues: list[dict]    <span class="c-comment"># [{severity, file, line, message}]</span>
+    summary: str
+
+<span class="c-comment"># Load the skill as the agent's system prompt</span>
+skill = open(<span class="c-str">"~/.claude/skills/code-review/SKILL.md"</span>).read()
+
+agent = Agent(
+    <span class="c-str">"claude-sonnet-4-6"</span>,
+    system_prompt=skill,
+    result_type=CodeReview   <span class="c-comment"># guaranteed structured output</span>
+)
+
+result = agent.run_sync(<span class="c-str">"Review this PR diff: ..."</span>)
+print(result.data.verdict)   <span class="c-comment"># always a valid CodeReview object</span></div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── SKILLS INSIDE AGENTS ── -->
+      <div class="ag-section" id="skills-in-agents">
+        <span class="ag-eyebrow">Apply it</span>
+        <h2 class="ag-title">Wiring skills into agents</h2>
+        <p class="ag-lead">Skills are your agent's procedures. Instead of writing complex prompt logic, load the appropriate SKILL.md as the system prompt for each sub-task. The skill handles the structure; the agent handles the loop.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">pr_review_agent.py — skill-powered agent</span></div>
+          <div class="code-body">import anthropic, pathlib
+
+client = anthropic.Anthropic()
+
+def load_skill(name: str) -> str:
+    return (pathlib.Path.home() / f<span class="c-str">".claude/skills/{name}/SKILL.md"</span>).read_text()
+
+def run_with_skill(skill_name: str, task: str) -> str:
+    <span class="c-comment">"""Run a task using a specific skill as the system prompt."""</span>
+    return client.messages.create(
+        model=<span class="c-str">"claude-sonnet-4-6"</span>,
+        max_tokens=<span class="c-accent">4096</span>,
+        system=load_skill(skill_name),
+        messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: task}]
+    ).content[0].text
+
+def review_pr(diff: str, ticket_context: str) -> dict:
+    <span class="c-comment"># Step 1: Security review</span>
+    security = run_with_skill(<span class="c-str">"security"</span>, f<span class="c-str">"Review this diff:\n{diff}"</span>)
+
+    <span class="c-comment"># Step 2: Code quality review</span>
+    quality = run_with_skill(<span class="c-str">"code-review"</span>, f<span class="c-str">"Review this diff:\n{diff}"</span>)
+
+    <span class="c-comment"># Step 3: Write the PR description</span>
+    description = run_with_skill(<span class="c-str">"pr-description"</span>,
+        f<span class="c-str">"Diff:\n{diff}\n\nTicket context:\n{ticket_context}"</span>)
+
+    return {
+        <span class="c-str">"security"</span>: security,
+        <span class="c-str">"quality"</span>: quality,
+        <span class="c-str">"description"</span>: description
+    }</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-top:1.2rem">
+          <table class="trigger-table">
+            <thead><tr><th>Agent task</th><th>Skill to load</th><th>What you get</th></tr></thead>
+            <tbody>
+              <tr><td>Review a PR</td><td>code-review + security</td><td>Severity table + OWASP flags</td></tr>
+              <tr><td>Plan a feature</td><td>planning</td><td>Task list with sizing and dependencies</td></tr>
+              <tr><td>Write a commit</td><td>commit-message</td><td>Conventional commit with scope</td></tr>
+              <tr><td>Write a ticket</td><td>ticket-writer</td><td>Jira-ready with AC and tech notes</td></tr>
+              <tr><td>Debug an error</td><td>debugging</td><td>Root cause → fix → regression guard</td></tr>
+              <tr><td>Validate AI output</td><td>harness-engineering</td><td>YAML tests + Python runner + CI</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── PRODUCTION CHECKLIST ── -->
+      <div class="ag-section" id="production">
+        <span class="ag-eyebrow">Apply it</span>
+        <h2 class="ag-title">Production checklist</h2>
+        <p class="ag-lead">Before you ship any agent into production, verify each of these. An agent that passes this list is one you can trust at scale.</p>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table">
+            <thead><tr><th>Check</th><th>How to verify</th><th>Skill that helps</th></tr></thead>
+            <tbody>
+              <tr><td>✓ Harness exists with golden + adversarial + consistency tests</td><td>Run <code>python tests/runner.py</code> — all pass</td><td>harness-engineering</td></tr>
+              <tr><td>✓ CI gate blocks merge on harness failure</td><td>Break a test intentionally — PR fails</td><td>harness-engineering</td></tr>
+              <tr><td>✓ Output is structured, not free text</td><td>Downstream code parses the output without regex</td><td>Pydantic AI + patterns</td></tr>
+              <tr><td>✓ Token cost is budgeted</td><td>Cost per run logged and within budget (Pattern 11)</td><td>patterns</td></tr>
+              <tr><td>✓ Max steps / loop limit enforced</td><td>Agent throws after N steps — no infinite loops</td><td>agent_loop.py above</td></tr>
+              <tr><td>✓ Memory is pruned and accurate</td><td>Review CLAUDE.md and memory files before launch</td><td>guide.html#dev</td></tr>
+              <tr><td>✓ Observability in place</td><td>Each step logs: skill name, tokens, result, duration</td><td>logging skill</td></tr>
+              <tr><td>✓ Safety rules tested adversarially</td><td>Run inputs that should trigger safety rules — they fire</td><td>harness-engineering</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="apply-box" style="margin-top:1.5rem">
+          <div class="apply-icon">🚀</div>
+          <div class="apply-body">
+            <h4>Start with one agent, one skill, one harness</h4>
+            <p>Don't build a multi-agent system on day one. Pick one task your team does manually every day. Wire the right skill to it. Build the harness. Ship it. Then expand. The playbook gives you everything you need: <code>harness-engineering</code> for the tests, <code>planning</code> for the roadmap, <code>code-review</code> for the agent logic itself.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main content -->
+  </div><!-- /agentic-layout -->
+
+</div><!-- /container -->
+
+<footer class="site-footer">
+  <a href="index.html" class="footer-brand">AI-Powered Dev & PM Playbook</a>
+  <div class="footer-links">
+    <a href="skills.html">Skills</a>
+    <a href="tools.html">Tools</a>
+    <a href="patterns.html">Patterns</a>
+    <a href="guide.html">Guide</a>
+    <a href="agentic.html">Agentic</a>
+    <a href="https://github.com/majidraza1228/claude-skills" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <span class="footer-copy">MIT License</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+function sbScroll(e, link) {
+  e.preventDefault();
+  const id = link.getAttribute('href').replace('#','');
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Scroll spy — highlight current sidebar item
+const sidebarItems = document.querySelectorAll('.as-item');
+const sections = Array.from(document.querySelectorAll('.ag-section'));
+const NAV_H = 64 + 40;
+
+function updateActive() {
+  let current = sections[0]?.id || '';
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top <= NAV_H) current = s.id;
+  });
+  sidebarItems.forEach(item => {
+    const href = item.getAttribute('href').replace('#','');
+    item.classList.toggle('active', href === current);
+  });
+}
+
+window.addEventListener('scroll', updateActive, {passive:true});
+window.addEventListener('load', updateActive);
+</script>
+</body>
+</html>
