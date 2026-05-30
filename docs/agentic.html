@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agentic Development & Harness Engineering — AI-Powered Dev & PM Playbook</title>
-<meta name="description" content="Complete guide to agentic coding: memory types, sub-agents, MCP servers, eval harnesses, frameworks, and how to apply skills in agent workflows.">
+<meta name="description" content="Complete guide to agentic coding: memory, sub-agents, workflow scripts, MCP, eval harnesses, and frameworks — with real examples using playbook skills.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -108,7 +108,7 @@
   <div class="section-header">
     <span class="eyebrow">Agentic development</span>
     <h1 class="page-title">Build agents that work reliably</h1>
-    <p class="page-lead">Memory, sub-agents, MCP servers, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
+    <p class="page-lead">Memory, sub-agents, workflow scripts, MCP, harnesses, and frameworks — with real examples showing how to wire playbook skills into every pattern.</p>
   </div>
 
   <div class="agentic-layout">
@@ -134,6 +134,10 @@
       <a class="as-item" href="#subagents-patterns" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Orchestrator pattern</div></a>
       <a class="as-item" href="#subagents-claude-code" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Claude Code workflows</div></a>
       <a class="as-item" href="#subagents-examples" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Real examples</div></a>
+      <div class="as-section-label">Workflow scripts</div>
+      <a class="as-item" href="#workflow-intro" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is a workflow</div></a>
+      <a class="as-item" href="#workflow-examples" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">3 built-in examples</div></a>
+      <a class="as-item" href="#workflow-build" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Build your own</div></a>
       <div class="as-section-label">MCP</div>
       <a class="as-item" href="#mcp-intro" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is MCP</div></a>
       <a class="as-item" href="#mcp-configure" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Configure MCP servers</div></a>
@@ -1109,6 +1113,219 @@ if failures:
           <div class="apply-body">
             <h4>Start with Example 1</h4>
             <p>The PR review pipeline is the fastest way to see sub-agents work. In Claude Code: open a PR diff, then say <code>"Run three sub-agents on this diff: /code-review, /tdd, /doc-writer. Show me each result then merge them."</code> No Python code needed — Claude Code handles the delegation.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── WORKFLOW INTRO ── -->
+      <div class="ag-section" id="workflow-intro">
+        <span class="ag-eyebrow">Workflow scripts</span>
+        <h2 class="ag-title">What is a Claude workflow?</h2>
+        <p class="ag-lead">A workflow is a <code>workflow.js</code> script that coordinates multiple LLM calls, tools, and sub-agents to accomplish a complex goal. Unlike a chat window — where everything accumulates in one context — workflows use isolated sub-agents to prevent context bloat and ensure deterministic, repeatable execution.</p>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:1.4rem">
+          <table class="trigger-table" style="font-size:.86rem">
+            <thead><tr><th>Concept</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><strong>workflow.js</strong></td><td>The script that defines phases, agent assignments, fan-out patterns, and merge steps. Runs as a separate process — not inside the chat window.</td></tr>
+              <tr><td><strong>Journal</strong></td><td>Persists the state of a running workflow. Lets you pause mid-run and resume later without losing completed agent results.</td></tr>
+              <tr><td><strong>Isolated sub-agents</strong></td><td>Each sub-agent gets its own context window. No shared state between workers — only the orchestrator sees all outputs. Prevents context bloat.</td></tr>
+              <tr><td><strong>Fan-out</strong></td><td>One orchestrator spawns many parallel workers at the same time. Results collected once all workers complete.</td></tr>
+              <tr><td><strong>Adversarial pattern</strong></td><td>Multiple agents independently evaluate the same output, then a final agent synthesises the consensus. Catches errors a single agent would miss.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="padding:1.1rem 1.4rem;margin-bottom:1rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;text-align:center">
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">16</div>
+              <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.2rem">concurrent agents max</div>
+            </div>
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">1,000</div>
+              <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.2rem">total agents per run</div>
+            </div>
+            <div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--accent)">3.1M</div>
+              <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.2rem">tokens in 12 min (deep research)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warn-box" style="background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)"><strong style="color:var(--accent)">Chat vs Workflow:</strong> In a chat window, every message adds to one growing context. After 20 tool calls the window fills up, the model loses earlier context, and quality degrades. A workflow runs each phase in a fresh sub-agent — context stays clean at every step regardless of total workflow size.</div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── WORKFLOW EXAMPLES ── -->
+      <div class="ag-section" id="workflow-examples">
+        <span class="ag-eyebrow">Workflow scripts</span>
+        <h2 class="ag-title">3 built-in workflow examples</h2>
+        <p class="ag-lead">These are real Claude Code workflows. Each shows a different agent pattern — fan-out + verify, pipeline + adversarial, and multi-model cost optimisation.</p>
+
+        <!-- Deep Research -->
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">1 — Deep Research <span style="font-size:.78rem;font-weight:600;color:var(--text-secondary);margin-left:.5rem">fan-out + adversarial verify</span></h3>
+        <p style="font-size:.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.8rem">High-intensity research on any topic. One run uses 100+ agents and millions of tokens. Five phases, each handled by isolated workers.</p>
+
+        <div class="loop-diagram" style="flex-wrap:wrap;row-gap:.6rem;margin-bottom:1rem">
+          <div class="loop-node accent" style="font-size:.78rem">Scope<br><span style="font-weight:400;opacity:.7">1 agent</span></div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node" style="font-size:.78rem">Search<br><span style="font-weight:400;opacity:.7">5 parallel</span></div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node" style="font-size:.78rem">Fetch<br><span style="font-weight:400;opacity:.7">top 15 URLs</span></div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node" style="font-size:.78rem;background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.25);color:#f87171">Verify<br><span style="font-weight:400;opacity:.8">75 agents</span></div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node accent" style="font-size:.78rem">Synthesise<br><span style="font-weight:400;opacity:.7">1 agent</span></div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">deep-research workflow — phase breakdown</span></div>
+          <div class="code-body"><span class="c-comment">// Phase 1 — Scope: break prompt into 5 angles</span>
+<span class="c-str">"benefits of Vitamin C"</span> → [absorption, immunity, collagen, antioxidant, dosage]
+
+<span class="c-comment">// Phase 2 — Search: 5 parallel web searches, one per angle</span>
+fan_out(angles, agent=<span class="c-str">"web-search"</span>)  <span class="c-comment">// 5 concurrent agents</span>
+
+<span class="c-comment">// Phase 3 — Fetch: deduplicate URLs, pull top 15, extract claims</span>
+deduplicated_urls = merge(search_results)
+fetch_parallel(top_15_urls)  <span class="c-comment">// extract falsifiable claims from each</span>
+
+<span class="c-comment">// Phase 4 — Verify: adversarial 3-vote fact check per claim</span>
+<span class="c-comment">// 25 claims × 3 independent verifier agents = 75 agents</span>
+for claim in claims:
+    votes = fan_out([claim, claim, claim], agent=<span class="c-str">"fact-checker"</span>)
+    verified_claims.append(majority_vote(votes))
+
+<span class="c-comment">// Phase 5 — Synthesise: one agent writes the final report</span>
+report = synthesise(verified_claims)</div>
+        </div>
+
+        <!-- Startup Forge -->
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .5rem">2 — Startup Forge <span style="font-size:.78rem;font-weight:600;color:var(--text-secondary);margin-left:.5rem">pipeline + adversarial stress test</span></h3>
+        <p style="font-size:.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.8rem">Generates startup ideas, scores them, stress-tests the winner with adversarial skeptics, then writes an honest investor pitch that confronts every objection.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">startup-forge workflow</span></div>
+          <div class="code-body"><span class="c-comment">// Phase 1 — Generate: 4 specialist ideation agents in parallel</span>
+ideas = fan_out([
+    <span class="c-str">"consumer lens"</span>,
+    <span class="c-str">"B2B lens"</span>,
+    <span class="c-str">"climate lens"</span>,
+    <span class="c-str">"AI-native lens"</span>,
+], agent=<span class="c-str">"idea-generator"</span>)
+
+<span class="c-comment">// Phase 2 — Judge: VC scoring agent evaluates each idea as it arrives</span>
+<span class="c-comment">// Criteria: novelty, market feasibility, total addressable market</span>
+scored = [vc_judge(idea) for idea in ideas]
+winner = max(scored, key=<span class="c-str">"score"</span>)
+
+<span class="c-comment">// Phase 3 — Stress test: 3 parallel skeptic agents attack the winner</span>
+objections = fan_out([winner, winner, winner], agent=<span class="c-str">"skeptic"</span>)
+<span class="c-comment">// Each skeptic looks for fatal flaws from a different angle</span>
+
+<span class="c-comment">// Phase 4 — Pitch: final agent writes a pitch that addresses all objections</span>
+pitch = synthesise(winner, objections)</div>
+        </div>
+
+        <!-- Branding / Multi-model -->
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .5rem">3 — Branding <span style="font-size:.78rem;font-weight:600;color:var(--text-secondary);margin-left:.5rem">multi-model cost optimisation</span></h3>
+        <p style="font-size:.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.8rem">Uses different Claude models for different phases — cheapest model for volume work, best model only for the final output. Dramatically cuts token cost without sacrificing quality.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">branding workflow — multi-model pattern</span></div>
+          <div class="code-body"><span class="c-comment">// Phase 1 — Generate: 6 Haiku agents brainstorm brand names + taglines</span>
+<span class="c-comment">// Haiku = fastest + cheapest. High volume, low cost.</span>
+candidates = fan_out(6, agent=<span class="c-str">"brand-brainstorm"</span>, model=<span class="c-str">"claude-haiku-4-5"</span>)
+
+<span class="c-comment">// Phase 2 — Critique: Sonnet scores each candidate</span>
+<span class="c-comment">// Sonnet = balanced. Good judgment, moderate cost.</span>
+scored = sonnet_agent.score(candidates, model=<span class="c-str">"claude-sonnet-4-6"</span>)
+winner = max(scored, key=<span class="c-str">"score"</span>)
+
+<span class="c-comment">// Phase 3 — Synthesise: Opus writes the final brand brief</span>
+<span class="c-comment">// Opus = most capable. Only used once — for the output that matters.</span>
+brief = opus_agent.write_brief(winner, model=<span class="c-str">"claude-opus-4-7"</span>)</div>
+        </div>
+
+        <div class="card" style="padding:1rem 1.2rem;margin-top:1rem;font-size:.86rem;line-height:1.6">
+          <strong style="display:block;margin-bottom:.5rem">Multi-model rule of thumb</strong>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:.4rem 1rem;color:var(--text-secondary)">
+            <strong style="color:#fbbf24">Haiku</strong><span>High-volume generation, classification, extraction — where you need many calls</span>
+            <strong style="color:rgba(150,200,255,.9)">Sonnet</strong><span>Scoring, critique, structured reasoning — balanced cost and quality</span>
+            <strong style="color:var(--accent)">Opus</strong><span>Final synthesis, complex judgment, the one output the user actually sees</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── BUILD YOUR OWN WORKFLOW ── -->
+      <div class="ag-section" id="workflow-build">
+        <span class="ag-eyebrow">Workflow scripts</span>
+        <h2 class="ag-title">Build your own workflow</h2>
+        <p class="ag-lead">A workflow script has three responsibilities: define phases, assign agents (with model + skill), and handle the Journal so runs can pause and resume. Start minimal — one fan-out, one merge.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">workflow.js — minimal structure</span></div>
+          <div class="code-body">import { workflow, fanOut, journal } from <span class="c-str">"@anthropic-ai/claude-code/workflow"</span>;
+
+export default workflow({
+  name: <span class="c-str">"pr-review"</span>,
+  journal: journal(<span class="c-str">"./.claude/journal/pr-review.json"</span>), <span class="c-comment">// pause + resume</span>
+
+  phases: [
+    {
+      name: <span class="c-str">"analyse"</span>,
+      <span class="c-comment">// Fan out: 3 parallel specialist sub-agents</span>
+      run: fanOut([
+        { skill: <span class="c-str">"code-review"</span>,   model: <span class="c-str">"claude-sonnet-4-6"</span>, input: <span class="c-str">"{{pr_diff}}"</span> },
+        { skill: <span class="c-str">"tdd"</span>,           model: <span class="c-str">"claude-haiku-4-5"</span>,  input: <span class="c-str">"{{pr_diff}}"</span> },
+        { skill: <span class="c-str">"doc-writer"</span>,   model: <span class="c-str">"claude-haiku-4-5"</span>,  input: <span class="c-str">"{{pr_diff}}"</span> },
+      ]),
+    },
+    {
+      name: <span class="c-str">"merge"</span>,
+      <span class="c-comment">// Single Opus call to synthesise all findings</span>
+      run: { model: <span class="c-str">"claude-opus-4-7"</span>, input: <span class="c-str">"{{analyse.results}}"</span> },
+    },
+  ],
+});</div>
+        </div>
+
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">run it</span></div>
+          <div class="code-body"><span class="c-comment"># Run the workflow — state saved to journal automatically</span>
+<span class="c-accent">claude workflow run</span> workflow.js --input pr_diff=@pr.diff
+
+<span class="c-comment"># Resume a paused run</span>
+<span class="c-accent">claude workflow resume</span> .claude/journal/pr-review.json
+
+<span class="c-comment"># Check status of a running workflow</span>
+<span class="c-accent">claude workflow status</span> pr-review</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-top:1.2rem">
+          <table class="trigger-table" style="font-size:.85rem">
+            <thead><tr><th>Pattern</th><th>Use it when</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Fan-out → merge</strong></td><td>Independent parallel work that needs combining</td><td>PR review: security + tests + docs → unified report</td></tr>
+              <tr><td><strong>Pipeline</strong></td><td>Each phase depends on the previous phase's output</td><td>Startup Forge: generate → judge → stress test → pitch</td></tr>
+              <tr><td><strong>Adversarial</strong></td><td>You need confidence — multiple agents must agree</td><td>Fact-check: 3 independent verifiers, majority vote</td></tr>
+              <tr><td><strong>Multi-model</strong></td><td>Cost matters — volume work doesn't need your best model</td><td>Branding: Haiku × 6 → Sonnet scores → Opus writes brief</td></tr>
+              <tr><td><strong>Fan-out per item</strong></td><td>Process a collection where each item is independent</td><td>Nightly scan: one agent per changed file</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">📋</div>
+          <div class="apply-body">
+            <h4>Apply it — ask Claude to scaffold a workflow for you</h4>
+            <p>Describe what you want to automate: <code>"Build a workflow.js that runs /code-review and /tdd in parallel on a PR diff, then uses Opus to write a merged summary. Use Haiku for the parallel agents to keep costs down."</code> Claude will write the full script including journal config and CLI commands.</p>
           </div>
         </div>
       </div>
