@@ -1,8 +1,8 @@
 # AI-Powered Developer & PM Playbook
 
-**7 battle-tested patterns for writing AI skills that work consistently — across Claude, Copilot, Codex, Cursor, Windsurf, and Gemini CLI.**
+**11 battle-tested patterns for writing AI skills and building AI features that work consistently — across Claude, Copilot, Codex, Cursor, Windsurf, and Gemini CLI.**
 
-Built from 75+ tests across real skill implementations. Every pattern here solves a specific failure mode — skills that don't trigger, output that drifts between runs, safety rules that never fire.
+Built from 75+ tests across real skill implementations. Every pattern here solves a specific failure mode — skills that don't trigger, output that drifts between runs, safety rules that never fire, and AI features that ship without success criteria or cost controls.
 
 ## Quick Start
 
@@ -21,7 +21,9 @@ cp dev-pm-skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
 ./scripts/export-skills.sh all   # or: copilot | codex | cursor | windsurf | gemini
 ```
 
-## The 7 Patterns
+## The 11 Patterns
+
+### Skill Design (for anyone writing SKILL.md files)
 
 | # | Pattern | Failure It Prevents |
 |---|---------|-------------------|
@@ -32,6 +34,15 @@ cp dev-pm-skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
 | 5 | [Output templates](PATTERNS.md#pattern-5-without-an-output-template-formats-drift) | Format changes every run |
 | 6 | [Worked examples over rules](PATTERNS.md#pattern-6-one-example-beats-five-rules) | Inconsistent structure |
 | 7 | [Skills under 500 lines](PATTERNS.md#pattern-7-skills-over-500-lines-drop-their-bottom-half) | Bottom-half instructions ignored |
+
+### Building with AI (for developers and PMs)
+
+| # | Pattern | Failure It Prevents |
+|---|---------|-------------------|
+| 8 | [Parse structure, not text](PATTERNS.md#pattern-8-parse-structure-not-text) | Regex on AI output breaks silently |
+| 9 | [Eval before merge, not after](PATTERNS.md#pattern-9-eval-before-merge-not-after) | Prompt changes silently break existing behavior |
+| 10 | [Define "correct" before building](PATTERNS.md#pattern-10-define-correct-before-building) | No way to know if an AI feature is working |
+| 11 | [Token cost is a product constraint](PATTERNS.md#pattern-11-token-cost-is-a-product-constraint) | $0.40/request discovered at billing, not design |
 
 ## Included Skills
 
@@ -147,7 +158,7 @@ The same `SKILL.md` files work across every major AI coding tool. The skill cont
 ```
 Calude-skills/
 ├── README.md
-├── PATTERNS.md                      ← Deep dive on all 7 patterns
+├── PATTERNS.md                      ← Deep dive on all 11 patterns
 ├── docs/
 │   ├── adoption-guide.md            ← Step-by-step adoption plan
 │   ├── checklist.md                 ← One-page audit checklist

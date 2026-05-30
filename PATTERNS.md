@@ -1,4 +1,4 @@
-# The 7 Skill-Design Patterns
+# The 11 Skill-Design Patterns
 
 Each pattern below includes: the failure mode, why it happens, before/after examples, and how to fix it.
 
@@ -288,3 +288,208 @@ Lines 650-800:  Safety warnings         ❌ Never fires
 - Move safety-critical rules to the first 100 lines
 - Split skills over 500 lines into focused sub-skills
 - Re-test after splitting to confirm bottom-half rules now fire
+
+---
+
+## Pattern 8: Parse Structure, Not Text
+
+### The Failure
+Regex and string splitting on AI output breaks silently. The skill changes, the model upgrades, or a prompt tweak shifts the format — and the parser returns garbage with no error.
+
+### Why It Happens
+Free-text output looks stable until it isn't. `response.split('\n')[0]` works in dev, breaks in prod when the model adds a preamble sentence. There's no contract between the prompt and the parser.
+
+### Before (Fragile)
+
+```python
+response = client.messages.create(...)
+text = response.content[0].text
+
+# Extract severity from first line
+severity = text.split('\n')[0].split(':')[1].strip()
+issues = re.findall(r'- (.+)', text)
+```
+
+One preamble sentence — `"Here's my review:"` — and `severity` is `"Here's my review"`.
+
+### After (Robust — tool use / JSON mode)
+
+```python
+tools = [{
+    "name": "code_review_result",
+    "description": "Structured code review output",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "severity": {"type": "string", "enum": ["critical", "warning", "nit", "pass"]},
+            "issues": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "file": {"type": "string"},
+                        "line": {"type": "integer"},
+                        "description": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "required": ["severity", "issues"]
+    }
+}]
+
+response = client.messages.create(tools=tools, tool_choice={"type": "any"}, ...)
+result = response.content[0].input   # Always a dict — no parsing needed
+```
+
+### What to Do
+- Any AI output consumed by code (not just displayed to a user) must use tool use or a JSON schema
+- Free-text output is fine for human-facing responses — not for anything downstream
+- If you're writing a regex to parse AI output, stop and add a tool definition instead
+
+---
+
+## Pattern 9: Eval Before Merge, Not After
+
+### The Failure
+A skill update ships, existing behavior silently breaks. Nobody notices until a user complains three days later. There's no diff for a prompt change — only a behavior diff.
+
+### Why It Happens
+Developers run tests before merging code. They don't run tests before merging a `SKILL.md` change. A prompt is treated like documentation, not like code.
+
+### Before (No gate)
+
+```bash
+# Developer updates skill, eyeballs one example, opens PR
+git add dev-pm-skills/code-review/SKILL.md
+git commit -m "tighten code review instructions"
+git push
+# Merged. 3 days later: "why is severity always 'nit' now?"
+```
+
+### After (Eval in CI)
+
+```yaml
+# .github/workflows/eval.yml
+name: Skill evals
+on: [push, pull_request]
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install anthropic pyyaml
+      - run: python evals/runner.py evals/code-review.yaml dev-pm-skills/code-review/SKILL.md
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+The runner exits 1 on any golden case failure — merge is blocked.
+
+### The Rule
+A `SKILL.md` change without an eval run is a deploy without tests. Treat it the same way.
+
+### What to Do
+- Add a golden test case file (`evals/<skill-name>.yaml`) for every skill that feeds downstream code
+- Wire eval runner into CI — see `dev-pm-skills/harness-engineering/SKILL.md` for the full setup
+- Minimum viable eval: 5 golden cases per skill. 10 is enough. More than 20 slows CI for no gain
+- Update goldens when you intentionally change behavior — never as a workaround for failures
+
+---
+
+## Pattern 10: Define "Correct" Before Building
+
+### The Failure
+The AI feature ships. Users complain the output isn't right. The team argues about whether it's right. Nobody defined right before they started.
+
+### Why It Happens
+PMs write acceptance criteria for deterministic features: "button saves the form." They apply the same approach to AI features: "it should give good recommendations." Good is not a test.
+
+### Before (No success criteria)
+
+```
+User story: As a user, I want AI-suggested next steps so I can
+move my tasks forward faster.
+
+Acceptance criteria:
+- AI generates at least 3 suggestions
+- Suggestions are relevant to the task
+- Response loads within 5 seconds
+```
+
+"Relevant" is not measurable. This ships with no way to know if it's working.
+
+### After (Measurable criteria)
+
+```
+Success criteria — defined before first line of code:
+
+Correctness:  8/10 suggestions must appear in the expert-curated
+              golden set for that task type (evaluated on 50 test tasks)
+
+Precision:    No suggestion may contradict an existing task dependency
+              (zero tolerance — automated check)
+
+Latency:      P95 response < 3s measured at feature launch
+
+User signal:  Suggestion acceptance rate ≥ 30% within 2 weeks of launch
+              (below 20% = revisit the prompt, below 10% = kill the feature)
+```
+
+### What to Do
+- For every AI feature, write success criteria before writing the prompt
+- At least one criterion must be measurable without asking a user ("does this contain X")
+- Set a kill threshold: if metric Y drops below Z after launch, the feature gets rolled back or reworked
+- Run the criteria against 10 real examples before the PR is opened — not after
+
+---
+
+## Pattern 11: Token Cost Is a Product Constraint
+
+### The Failure
+A feature that costs $0.40 per request looks fine in dev with 10 test users. At 10,000 daily active users it's $4,000/day. The PM learns this at the billing alert.
+
+### Why It Happens
+Devs think in latency. PMs think in user value. Neither thinks in token budget during design. Context window size feels like a technical detail — it's actually a cost and a latency dial.
+
+### Before (Ignoring token budget)
+
+```python
+# Sends full document history + entire thread + full system prompt every call
+response = client.messages.create(
+    model="claude-opus-4-6",
+    max_tokens=4096,
+    system=full_system_prompt,          # 2,000 tokens
+    messages=full_conversation_history  # grows unbounded
+)
+```
+
+Day 1: 3,000 tokens/call. Day 30: 40,000 tokens/call. Same feature, 13× the cost.
+
+### After (Token-aware design)
+
+```python
+# 1. Cache the static system prompt — charged once, not every call
+# 2. Summarise history beyond last 5 turns instead of sending it all
+# 3. Chunk documents — only send the relevant section, not the whole file
+# 4. Use the right model for the task — Haiku for triage, Sonnet for reasoning
+
+HISTORY_WINDOW = 5   # last N turns only
+history = conversation[-HISTORY_WINDOW:]
+
+if len(conversation) > HISTORY_WINDOW:
+    summary = summarise_older_turns(conversation[:-HISTORY_WINDOW])
+    history = [{"role": "user", "content": f"[Earlier context]: {summary}"}] + history
+```
+
+### The Rule
+Token budget is a product decision, not an implementation detail. PMs and devs should agree on it before the first prototype, the same way they agree on SLAs.
+
+### What to Do
+- Estimate token cost per request at design time: (system prompt + avg context + avg response) × model price
+- Set a per-request budget and build to it
+- Use prompt caching for any system prompt over 1,000 tokens that doesn't change per request
+- Pick model tier by task: routing/triage → Haiku, reasoning/generation → Sonnet, complex multi-step → Opus
+- Monitor token usage in prod from day one — add it to your observability dashboard, not just dollar spend
