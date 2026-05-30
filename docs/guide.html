@@ -57,6 +57,31 @@
 
 /* ── Separator ── */
 .panel-divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+
+/* ── Vibe vs agentic section ── */
+.vibe-section{margin:3rem 0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.vibe-header{background:rgba(255,255,255,.03);padding:1.4rem 1.8rem;border-bottom:1px solid var(--border)}
+.vibe-header h2{font-size:1.25rem;font-weight:700;margin-bottom:.25rem}
+.vibe-header p{font-size:.9rem;color:var(--text-secondary);line-height:1.5}
+.vibe-cols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:680px){.vibe-cols{grid-template-columns:1fr}}
+.vibe-col{padding:1.6rem 1.8rem}
+.vibe-col+.vibe-col{border-left:1px solid var(--border)}
+@media(max-width:680px){.vibe-col+.vibe-col{border-left:none;border-top:1px solid var(--border)}}
+.vibe-col-label{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.vibe-col-label.bad{color:#f87171}
+.vibe-col-label.good{color:var(--accent)}
+.vibe-row{display:flex;gap:.7rem;margin-bottom:.65rem;font-size:.88rem;line-height:1.45;align-items:flex-start}
+.vibe-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:.7rem;font-weight:700;margin-top:.1rem}
+.vibe-dot.bad{background:rgba(248,113,113,.15);color:#f87171}
+.vibe-dot.good{background:var(--accent-dim);color:var(--accent)}
+.vibe-row span{color:var(--text-secondary)}
+.harness-callout{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:10px;padding:1.2rem 1.5rem;margin-top:1.2rem;display:grid;grid-template-columns:auto 1fr;gap:.8rem 1rem;align-items:start}
+.harness-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-dim);display:grid;place-items:center;font-size:1.1rem;flex-shrink:0}
+.harness-body h4{font-size:.95rem;font-weight:700;margin-bottom:.25rem}
+.harness-body p{font-size:.87rem;color:var(--text-secondary);line-height:1.5}
+.harness-body a{color:var(--accent);text-decoration:none;font-weight:600}
+.harness-body a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -81,6 +106,34 @@
     <span class="eyebrow">Getting started</span>
     <h1 class="page-title">Who are you?</h1>
     <p class="page-lead">Pick your role. We'll show you exactly which skills to use and how to trigger them — up and running in 5 minutes.</p>
+  </div>
+
+  <!-- VIBE vs AGENTIC -->
+  <div class="vibe-section">
+    <div class="vibe-header">
+      <h2>Don't vibe code — use agentic coding</h2>
+      <p>Most people use AI wrong: ask, accept, ship. No structure, no tests, no accountability. Here's the difference — and how to do it right.</p>
+    </div>
+    <div class="vibe-cols">
+      <div class="vibe-col">
+        <div class="vibe-col-label bad">✕ &nbsp;Vibe coding</div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>Ask AI to write code, accept it, ship it without reading it</span></div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>No tests — "it worked in dev so it's fine"</span></div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>Prompt changes silently break behavior you depend on</span></div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>Output format drifts run to run — automation breaks</span></div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>No measurable definition of "done" — just vibes</span></div>
+        <div class="vibe-row"><div class="vibe-dot bad">✕</div><span>Bugs discovered in production, not before merge</span></div>
+      </div>
+      <div class="vibe-col">
+        <div class="vibe-col-label good">✓ &nbsp;Agentic coding</div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>Use structured skills — every output follows a tested template</span></div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>Write eval harnesses: golden tests that fail before merge, not after</span></div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>CI gate catches prompt regressions automatically</span></div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>Output templates lock the format — automation stays stable</span></div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>Define "correct" before building — measurable success criteria</span></div>
+        <div class="vibe-row"><div class="vibe-dot good">✓</div><span>Skills + harnesses = AI you can trust in production</span></div>
+      </div>
+    </div>
   </div>
 
   <!-- PERSONA SELECTOR -->
@@ -193,6 +246,27 @@ cd claude-skills
       <div class="step-block">
         <div class="step-num">5</div>
         <div class="step-content">
+          <h3>Don't ship AI output without a harness</h3>
+          <p>This is the step most developers skip — and where vibe coding starts. Every AI-generated function, query, or review should have a test that confirms it behaves correctly. Use the <strong>harness-engineering</strong> skill to build one.</p>
+          <div class="code-block">
+            <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Claude Code</span></div>
+            <div class="code-body"><span class="c-str">"build an eval harness for my code-review skill"</span>
+<span class="c-comment">→ YAML golden test cases + Python assertion runner</span>
+<span class="c-comment">→ GitHub Actions CI gate that fails before merge</span></div>
+          </div>
+          <div class="harness-callout">
+            <div class="harness-icon">🧪</div>
+            <div class="harness-body">
+              <h4>What the harness catches</h4>
+              <p>A <strong>golden test</strong> runs the same prompt and asserts the output matches expected structure. An <strong>adversarial test</strong> checks that safety rules fire. A <strong>consistency test</strong> runs the same prompt 3× and checks format doesn't drift. These run in CI on every PR — so prompt regressions never reach production. <a href="skills.html">See the harness-engineering skill →</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">6</div>
+        <div class="step-content">
           <h3>Save output to a file</h3>
           <p>Add "save to a file" to any request. Claude writes to the <code style="background:rgba(255,255,255,.07);padding:.1em .35em;border-radius:4px;font-size:.88em">output/</code> folder.</p>
           <div class="code-block">
@@ -287,7 +361,35 @@ cd claude-skills
       <div class="step-block">
         <div class="step-num">4</div>
         <div class="step-content">
-          <h3>Set up the agent PM system (optional)</h3>
+          <h3>Define success before you trigger any skill</h3>
+          <p>This is where PM vibe-coding happens: asking AI to plan a sprint or write a PRD without knowing what "done" looks like. The output sounds good but has no teeth. Fix this with one rule: <strong>write your success criteria before you trigger the skill.</strong></p>
+          <div class="card" style="padding:0;overflow:hidden;margin-top:.5rem">
+            <table class="trigger-table">
+              <thead>
+                <tr><th>Before you trigger</th><th>Ask yourself</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>ticket-writer</td><td>What does acceptance look like? What are the edge cases?</td></tr>
+                <tr><td>sprint-planning</td><td>What does a successful sprint deliver — specifically?</td></tr>
+                <tr><td>prd-writer</td><td>How will you measure if this feature worked in 30 days?</td></tr>
+                <tr><td>retro</td><td>What one action item must come out of this, with a named owner?</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="harness-callout" style="margin-top:.8rem">
+            <div class="harness-icon">📏</div>
+            <div class="harness-body">
+              <h4>Pattern 10: Define "correct" before building</h4>
+              <p>If you can't write a test that proves the feature worked, you're not ready to build it. The same applies to AI output — if you can't define what a good ticket looks like, the AI can't produce one reliably. <a href="patterns.html">See Pattern 10 →</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Set up the agent PM system (optional, but powerful)</h3>
           <p>Developers check in once a day. You get a full team summary on demand — no chasing updates.</p>
           <div class="code-block">
             <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">terminal — run once in your project</span></div>
@@ -304,7 +406,7 @@ cp templates/SPRINT.md ./SPRINT.md
       </div>
 
       <div class="step-block">
-        <div class="step-num">5</div>
+        <div class="step-num">6</div>
         <div class="step-content">
           <h3>Save output to a file</h3>
           <p>Add "save to a file" to any request. Claude writes to the <code style="background:rgba(255,255,255,.07);padding:.1em .35em;border-radius:4px;font-size:.88em">output/</code> folder — useful for retro notes, PRDs, and sprint plans.</p>
