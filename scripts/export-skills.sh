@@ -10,7 +10,7 @@
 #   ./scripts/export-skills.sh gemini    → outputs to .gemini/skills/ (copy only)
 #   ./scripts/export-skills.sh all       → runs all of the above
 
-SKILLS_DIR="$(cd "$(dirname "$0")/.." && pwd)/skills"
+SKILLS_DIR="$(cd "$(dirname "$0")/.." && pwd)/dev-pm-skills"
 TARGET="$1"
 
 # Strip YAML frontmatter (content between first and second --- markers)

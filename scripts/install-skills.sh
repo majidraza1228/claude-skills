@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-SKILLS_DIR="$(cd "$(dirname "$0")/../skills" && pwd)"
+SKILLS_DIR="$(cd "$(dirname "$0")/../dev-pm-skills" && pwd)"
 GLOBAL_DIR="$HOME/.claude/skills"
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)/.claude/skills"
 
@@ -39,7 +39,7 @@ show_status() {
     echo "========================================"
 
     echo ""
-    echo -e "${CYAN}Available skills (skills/):${NC}"
+    echo -e "${CYAN}Available skills (dev-pm-skills/):${NC}"
     for dir in "$SKILLS_DIR"/*/; do
         name=$(basename "$dir")
         global_link="$GLOBAL_DIR/$name"
@@ -76,7 +76,7 @@ install_skill() {
     local dst="$target_dir/$skill_name"
 
     if [ ! -d "$src" ]; then
-        echo -e "  ${RED}✗ Not found:${NC} $skill_name (no directory in skills/)"
+        echo -e "  ${RED}✗ Not found:${NC} $skill_name (no directory in dev-pm-skills/)"
         return 1
     fi
 

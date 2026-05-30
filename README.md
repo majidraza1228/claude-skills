@@ -15,7 +15,7 @@ cd Calude-skills
 ./scripts/audit-skills.sh /path/to/your/skills
 
 # 3. Copy a starter skill
-cp skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
+cp dev-pm-skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
 
 # 4. Export to your tool of choice
 ./scripts/export-skills.sh all   # or: copilot | codex | cursor | windsurf | gemini
@@ -39,35 +39,35 @@ cp skills/code-review/SKILL.md /path/to/your/skills/my-new-skill/SKILL.md
 
 | Skill | What It Does |
 |-------|-------------|
-| [planning](skills/planning/SKILL.md) | Break features into tasks with done criteria and dependencies |
-| [code-explain](skills/code-explain/SKILL.md) | Explain unfamiliar code, algorithms, or regex at the right depth |
-| [debugging](skills/debugging/SKILL.md) | 5-step bug triage: reproduce → localize → reduce → fix → guard |
-| [refactor](skills/refactor/SKILL.md) | Simplify code without changing behavior (Chesterton's Fence rule) |
-| [performance](skills/performance/SKILL.md) | Measure-first optimization: N+1 queries, caching, profiling |
+| [planning](dev-pm-skills/planning/SKILL.md) | Break features into tasks with done criteria and dependencies |
+| [code-explain](dev-pm-skills/code-explain/SKILL.md) | Explain unfamiliar code, algorithms, or regex at the right depth |
+| [debugging](dev-pm-skills/debugging/SKILL.md) | 5-step bug triage: reproduce → localize → reduce → fix → guard |
+| [refactor](dev-pm-skills/refactor/SKILL.md) | Simplify code without changing behavior (Chesterton's Fence rule) |
+| [performance](dev-pm-skills/performance/SKILL.md) | Measure-first optimization: N+1 queries, caching, profiling |
 
 ### Code Quality & Review
 
 | Skill | What It Does |
 |-------|-------------|
-| [code-review](skills/code-review/SKILL.md) | Structured review with severity table (CRITICAL/WARNING/NIT) and verdict |
-| [security](skills/security/SKILL.md) | OWASP Top 10 security review — flags critical issues before merge |
-| [tdd](skills/tdd/SKILL.md) | Red-green-refactor TDD with test pyramid and worked examples |
+| [code-review](dev-pm-skills/code-review/SKILL.md) | Structured review with severity table (CRITICAL/WARNING/NIT) and verdict |
+| [security](dev-pm-skills/security/SKILL.md) | OWASP Top 10 security review — flags critical issues before merge |
+| [tdd](dev-pm-skills/tdd/SKILL.md) | Red-green-refactor TDD with test pyramid and worked examples |
 
 ### Git & Release
 
 | Skill | What It Does |
 |-------|-------------|
-| [commit-message](skills/commit-message/SKILL.md) | Conventional commit formatting with worked examples |
-| [pr-description](skills/pr-description/SKILL.md) | PR body with what/why, test steps, and reviewer notes |
-| [changelog](skills/changelog/SKILL.md) | Keep a Changelog format from commit list or git log |
+| [commit-message](dev-pm-skills/commit-message/SKILL.md) | Conventional commit formatting with worked examples |
+| [pr-description](dev-pm-skills/pr-description/SKILL.md) | PR body with what/why, test steps, and reviewer notes |
+| [changelog](dev-pm-skills/changelog/SKILL.md) | Keep a Changelog format from commit list or git log |
 
 ### Data & APIs
 
 | Skill | What It Does |
 |-------|-------------|
-| [api-design](skills/api-design/SKILL.md) | Contract-first API design with breaking change assessment |
-| [sql](skills/sql/SKILL.md) | Write and optimize SQL queries safely (with guards for DELETE/UPDATE) |
-| [database-schema](skills/database-schema/SKILL.md) | Schema design with migration + rollback scripts |
+| [api-design](dev-pm-skills/api-design/SKILL.md) | Contract-first API design with breaking change assessment |
+| [sql](dev-pm-skills/sql/SKILL.md) | Write and optimize SQL queries safely (with guards for DELETE/UPDATE) |
+| [database-schema](dev-pm-skills/database-schema/SKILL.md) | Schema design with migration + rollback scripts |
 
 ### Agent-Driven Project Management
 
@@ -75,8 +75,8 @@ No PM needed. Developers check into a shared `TEAM.md`. Agents handle the rest.
 
 | Skill | What It Does |
 |-------|-------------|
-| [daily-checkin](skills/daily-checkin/SKILL.md) | Dev runs this once a day — agent reads git log + sprint board, writes structured entry to `TEAM.md` |
-| [team-digest](skills/team-digest/SKILL.md) | Reads `TEAM.md` + `SPRINT.md`, produces team summary, sprint velocity, and blocker table |
+| [daily-checkin](dev-pm-skills/daily-checkin/SKILL.md) | Dev runs this once a day — agent reads git log + sprint board, writes structured entry to `TEAM.md` |
+| [team-digest](dev-pm-skills/team-digest/SKILL.md) | Reads `TEAM.md` + `SPRINT.md`, produces team summary, sprint velocity, and blocker table |
 
 **How to set up:**
 1. Copy `templates/TEAM.md` and `templates/SPRINT.md` to your project root
@@ -88,23 +88,23 @@ No PM needed. Developers check into a shared `TEAM.md`. Agents handle the rest.
 
 | Skill | What It Does |
 |-------|-------------|
-| [sprint-planning](skills/sprint-planning/SKILL.md) | Break a feature or milestone into sprint tasks with sizing, priority, dependencies, and risks |
-| [ticket-writer](skills/ticket-writer/SKILL.md) | Turn rough notes into a well-formed Jira/Linear/GitHub Issue with AC, technical notes, and scope |
-| [standup-writer](skills/standup-writer/SKILL.md) | Write daily or weekly standup updates from git log, task list, or rough notes |
-| [retro](skills/retro/SKILL.md) | Run a sprint retro or incident post-mortem — blameless, action-oriented, with owners and due dates |
+| [sprint-planning](dev-pm-skills/sprint-planning/SKILL.md) | Break a feature or milestone into sprint tasks with sizing, priority, dependencies, and risks |
+| [ticket-writer](dev-pm-skills/ticket-writer/SKILL.md) | Turn rough notes into a well-formed Jira/Linear/GitHub Issue with AC, technical notes, and scope |
+| [standup-writer](dev-pm-skills/standup-writer/SKILL.md) | Write daily or weekly standup updates from git log, task list, or rough notes |
+| [retro](dev-pm-skills/retro/SKILL.md) | Run a sprint retro or incident post-mortem — blameless, action-oriented, with owners and due dates |
 
 ### Observability
 
 | Skill | What It Does |
 |-------|-------------|
-| [logging](skills/logging/SKILL.md) | Structured logging: what to log, what to redact, log levels |
-| [doc-generator](skills/doc-generator/SKILL.md) | Generate documentation from code |
+| [logging](dev-pm-skills/logging/SKILL.md) | Structured logging: what to log, what to redact, log levels |
+| [doc-generator](dev-pm-skills/doc-generator/SKILL.md) | Generate documentation from code |
 
 ### Examples
 
 | Skill | What It Does |
 |-------|-------------|
-| [fitness-coach](skills/fitness-coach/) | Pattern 7 example: 4 focused sub-skills (exercise, nutrition, recovery, safety) under 200 lines each |
+| [fitness-coach](dev-pm-skills/fitness-coach/) | Pattern 7 example: 4 focused sub-skills (exercise, nutrition, recovery, safety) under 200 lines each |
 
 ## Installing Skills for Claude Code
 
@@ -166,14 +166,14 @@ Calude-skills/
 │   ├── cursor-setup.md
 │   ├── windsurf-setup.md
 │   └── gemini-cli-setup.md
-├── skills/                          ← Source skills (edit these)
+├── dev-pm-skills/                   ← Developer & PM skills (edit these)
 │   ├── code-review/SKILL.md
 │   ├── commit-message/SKILL.md
 │   ├── doc-generator/SKILL.md
 │   ├── api-design/SKILL.md
 │   ├── security/SKILL.md
 │   ├── tdd/SKILL.md
-│   └── fitness-coach/               ← Example of sub-skill splitting
+│   └── daily-checkin/               ← Agent PM skills
 ├── scripts/
 │   ├── export-skills.sh             ← Export to any tool format
 │   ├── audit-skills.sh              ← Audit skills for pattern violations
@@ -199,7 +199,7 @@ See [docs/adoption-guide.md](docs/adoption-guide.md) for the full plan. The shor
 ## Contributing
 
 1. Fork the repo
-2. Add or improve a skill in `skills/`
+2. Add or improve a skill in `dev-pm-skills/`
 3. Run `./scripts/export-skills.sh all` to regenerate tool exports
 4. Submit a PR — the CI linter will check your skill automatically
 
