@@ -152,9 +152,8 @@ The same `SKILL.md` files work across every major AI coding tool. The skill cont
 |------|----------------|--------|-------------|
 | **Claude Code** | Native — auto-routes from natural language | `"review my code"` or `/code-review` | [claude-code-setup.md](docs/claude-code-setup.md) |
 | **Cursor** | `.cursor/rules/*.mdc` — `@mention` in chat | `@code-review` | [cursor-setup.md](docs/cursor-setup.md) |
-| **VS Code** (Copilot, Cline, Continue) | `#file:` reference or always-on instructions | `#file:.github/skills/name.md` | [vscode-setup.md](docs/vscode-setup.md) |
+| **VS Code + Copilot** (Copilot, Cline, Continue) | `#file:` reference or always-on instructions | `#file:.github/skills/name.md` | [vscode-setup.md](docs/vscode-setup.md) |
 | **OpenAI Codex** | `.codex/playbooks/` — reference in task | Mention in task description | [codex-setup.md](docs/codex-setup.md) |
-| **GitHub Copilot** (standalone) | `.github/copilot-instructions.md` or `#file:` | `#file:.github/skills/name.md` | [copilot-setup.md](docs/copilot-setup.md) |
 | **Windsurf** | `.windsurf/rules/` — Cascade rules | Prompt to follow procedure | [windsurf-setup.md](docs/windsurf-setup.md) |
 | **Gemini CLI** | `.gemini/skills/` | `/skill-name` | [gemini-cli-setup.md](docs/gemini-cli-setup.md) |
 
@@ -220,13 +219,11 @@ Calude-skills/
 
 ## Adoption Path
 
-See [docs/adoption-guide.md](docs/adoption-guide.md) for the full plan. The short version:
+See [docs/adoption-guide.md](docs/adoption-guide.md) for the full guide. Two paths:
 
-**Day 1:** Run `./scripts/audit-skills.sh` on your repo. Read the report.
-**Day 2–3:** Fix descriptions and exclusions (Patterns 1–2).
-**Day 4–5:** Add templates and examples (Patterns 5–6).
-**Day 6–7:** Split long skills, reorder critical rules (Patterns 4, 7).
-**Day 8+:** Validate with `./scripts/test-consistency.sh`.
+**Using the playbook (Day 1):** Install → trigger your first skill → pick your 5 daily skills → integrate into your real workflow.
+
+**Improving or building skills (contributor path):** Audit → fix descriptions (Pattern 1–2) → add templates and examples (Pattern 5–6) → split long skills (Pattern 7) → validate with `./scripts/test-consistency.sh`.
 
 ## Contributing
 
