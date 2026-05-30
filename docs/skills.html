@@ -8,32 +8,59 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
 <style>
-/* ── Source modal ── */
+/* ── Source modal chrome ── */
 .src-modal-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .22s}
 .src-modal-bg.open{opacity:1;pointer-events:all}
-.src-modal{background:#0a0a0a;border:1px solid rgba(255,255,255,.18);border-radius:20px;max-width:760px;width:100%;max-height:90vh;display:flex;flex-direction:column;transform:translateY(20px) scale(.97);transition:transform .28s cubic-bezier(.16,1,.3,1)}
+.src-modal{background:#0d1117;border:1px solid #30363d;border-radius:20px;max-width:780px;width:100%;max-height:90vh;display:flex;flex-direction:column;transform:translateY(20px) scale(.97);transition:transform .28s cubic-bezier(.16,1,.3,1)}
 .src-modal-bg.open .src-modal{transform:none}
-.src-modal-hd{display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.src-modal-hd{display:flex;align-items:center;gap:.75rem;padding:1rem 1.4rem;border-bottom:1px solid #30363d;flex-shrink:0;background:#161b22;border-radius:20px 20px 0 0}
 .src-modal-dots{display:flex;gap:6px}
-.src-modal-dots s{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.15);display:block}
+.src-modal-dots s{width:11px;height:11px;border-radius:50%;background:#30363d;display:block}
 .src-modal-dots s:first-child{background:var(--accent)}
-.src-modal-fname{font-size:.82rem;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.03em;flex:1;font-family:'Menlo','Monaco',monospace}
-.src-copy-btn{display:flex;align-items:center;gap:.4rem;padding:.35em .85em;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-family:var(--font);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;flex-shrink:0}
-.src-copy-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(34,197,94,.08)}
-.src-copy-btn.copied{border-color:rgba(100,220,150,.5);color:rgba(130,240,170,.9);background:rgba(100,220,150,.08)}
-.src-close-btn{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);font-size:.95rem;cursor:pointer;display:grid;place-items:center;transition:all .15s;flex-shrink:0}
-.src-close-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
-.src-modal-body{overflow-y:auto;flex:1;min-height:0}
-.src-pre{margin:0;padding:1.4rem;font-family:'Menlo','Monaco','Courier New',monospace;font-size:.82rem;line-height:1.75;color:rgba(255,255,255,.82);white-space:pre-wrap;word-break:break-word;tab-size:2}
-.src-modal-ft{padding:.9rem 1.4rem;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:flex-end;flex-shrink:0}
-.src-gh-link{font-size:.85rem;color:rgba(255,255,255,.4);text-decoration:none;transition:color .15s}
-.src-gh-link:hover{color:var(--accent)}
+.src-modal-fname{font-size:.8rem;font-weight:600;color:#8b949e;letter-spacing:.02em;flex:1;font-family:'Menlo','Monaco',monospace}
+.src-copy-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.38em .9em;border-radius:7px;border:1px solid #30363d;background:#21262d;color:#c9d1d9;font-family:var(--font);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;flex-shrink:0;line-height:1}
+.src-copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.src-copy-btn.copied{border-color:rgba(34,197,94,.5);color:var(--accent);background:rgba(34,197,94,.08)}
+.src-close-btn{width:28px;height:28px;border-radius:7px;border:1px solid #30363d;background:transparent;color:#8b949e;font-size:.9rem;cursor:pointer;display:grid;place-items:center;transition:all .15s;flex-shrink:0}
+.src-close-btn:hover{border-color:#8b949e;color:#e6edf3}
+.src-modal-body{overflow-y:auto;flex:1;min-height:0;padding:1.6rem 2rem}
+.src-modal-ft{padding:.85rem 1.4rem;border-top:1px solid #30363d;display:flex;justify-content:flex-end;flex-shrink:0;background:#161b22;border-radius:0 0 20px 20px}
+.src-gh-link{font-size:.83rem;color:#8b949e;text-decoration:none;transition:color .15s}
+.src-gh-link:hover{color:#58a6ff;text-decoration:underline}
 
-/* ── Skill modal action row ── */
-.modal-actions{display:flex;align-items:center;gap:.75rem;margin-top:1.4rem;flex-wrap:wrap}
-.btn-view-source{display:inline-flex;align-items:center;gap:.4rem;padding:.5em 1.1em;border-radius:8px;border:1px solid var(--accent);background:rgba(34,197,94,.1);color:var(--accent);font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s}
+/* ── Rendered markdown (GitHub dark style) ── */
+.src-md{color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:.9rem;line-height:1.65;word-break:break-word}
+.src-md h1,.src-md h2,.src-md h3,.src-md h4{color:#e6edf3;font-weight:700;margin:1.4em 0 .6em;line-height:1.2;letter-spacing:-.01em}
+.src-md h1{font-size:1.6em;padding-bottom:.35em;border-bottom:1px solid #30363d}
+.src-md h2{font-size:1.25em;padding-bottom:.3em;border-bottom:1px solid #21262d}
+.src-md h3{font-size:1.05em}
+.src-md h4{font-size:.95em;color:#8b949e}
+.src-md p{margin:.7em 0}
+.src-md a{color:#58a6ff;text-decoration:none}
+.src-md a:hover{text-decoration:underline}
+.src-md strong{color:#e6edf3;font-weight:700}
+.src-md em{font-style:italic;color:#c9d1d9}
+.src-md code{font-family:'Menlo','Monaco','Courier New',monospace;font-size:.85em;background:#161b22;border:1px solid #30363d;border-radius:5px;padding:.12em .4em;color:#e6edf3}
+.src-md pre{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;margin:.9em 0}
+.src-md pre code{background:none;border:none;padding:0;font-size:.82rem;line-height:1.7;color:#c9d1d9}
+.src-md ul,.src-md ol{margin:.6em 0;padding-left:1.8em}
+.src-md li{margin:.3em 0;line-height:1.6}
+.src-md blockquote{border-left:3px solid #30363d;margin:.8em 0;padding:.4em 1em;color:#8b949e}
+.src-md hr{border:none;border-top:1px solid #30363d;margin:1.5em 0}
+.src-md table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:.87rem}
+.src-md th{background:#161b22;color:#e6edf3;font-weight:700;text-align:left;padding:.55em .9em;border:1px solid #30363d}
+.src-md td{padding:.5em .9em;border:1px solid #21262d;vertical-align:top}
+.src-md tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+/* YAML frontmatter block */
+.src-md .frontmatter{background:#161b22;border:1px solid #30363d;border-left:3px solid #8b949e;border-radius:6px;padding:.85rem 1.1rem;margin-bottom:1.4rem;font-family:'Menlo','Monaco',monospace;font-size:.8rem;color:#8b949e;line-height:1.65;white-space:pre-wrap}
+
+/* ── Skill modal action row (both buttons equal height) ── */
+.modal-actions{display:flex;align-items:center;gap:.6rem;margin-top:1.4rem;flex-wrap:wrap}
+.btn-view-source{display:inline-flex;align-items:center;gap:.4rem;padding:.48em 1.05em;border-radius:8px;border:1px solid var(--accent);background:rgba(34,197,94,.1);color:var(--accent);font-family:var(--font);font-size:.86rem;font-weight:700;cursor:pointer;transition:all .15s;line-height:1;text-decoration:none}
 .btn-view-source:hover{background:rgba(34,197,94,.2)}
+.modal-actions .modal-gh-link{margin-top:0;padding:.48em 1.05em;font-size:.86rem;line-height:1}
 </style>
 </head>
 <body>
@@ -96,7 +123,7 @@
       <button class="src-close-btn" id="srcClose" aria-label="Close source">✕</button>
     </div>
     <div class="src-modal-body">
-      <pre class="src-pre" id="srcPre"></pre>
+      <div class="src-md" id="srcMd"></div>
     </div>
     <div class="src-modal-ft">
       <a id="srcGhLink" href="#" class="src-gh-link" target="_blank" rel="noopener">Open on GitHub ↗</a>
@@ -468,15 +495,24 @@ modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal();
 
 // ── Source modal ──────────────────────────────────────────────
 const srcModalBg = document.getElementById('srcModalBg');
-const srcPre = document.getElementById('srcPre');
+const srcMd = document.getElementById('srcMd');
 const srcFname = document.getElementById('srcFname');
 const srcGhLink = document.getElementById('srcGhLink');
+let currentSourceText = '';
 
 function openSource(id, ghPath) {
-  const content = (typeof SKILL_SOURCE !== 'undefined' && SKILL_SOURCE[id])
+  const raw = (typeof SKILL_SOURCE !== 'undefined' && SKILL_SOURCE[id])
     ? SKILL_SOURCE[id]
     : '# Source not available\n\nOpen on GitHub to view the full SKILL.md file.';
-  srcPre.textContent = content;
+  currentSourceText = raw;
+  const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n?/);
+  let body = raw;
+  let fmHtml = '';
+  if (fmMatch) {
+    fmHtml = `<div class="frontmatter">---\n${fmMatch[1]}\n---</div>`;
+    body = raw.slice(fmMatch[0].length);
+  }
+  srcMd.innerHTML = fmHtml + (typeof marked !== 'undefined' ? marked.parse(body) : `<pre>${body}</pre>`);
   srcFname.textContent = ghPath + '/SKILL.md';
   srcGhLink.href = `https://github.com/majidraza1228/claude-skills/tree/main/${ghPath}/SKILL.md`;
   srcModalBg.classList.add('open');
@@ -486,6 +522,8 @@ function openSource(id, ghPath) {
 function closeSource() {
   srcModalBg.classList.remove('open');
   document.body.style.overflow = '';
+  srcMd.innerHTML = '';
+  currentSourceText = '';
   const btn = document.getElementById('srcCopyBtn');
   btn.textContent = '';
   btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11V3a2 2 0 0 1 2-2h8"/></svg> Copy';
@@ -495,7 +533,7 @@ function closeSource() {
 async function copySource() {
   const btn = document.getElementById('srcCopyBtn');
   try {
-    await navigator.clipboard.writeText(srcPre.textContent);
+    await navigator.clipboard.writeText(currentSourceText);
     btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8 6 12 14 4"/></svg> Copied!';
     btn.classList.add('copied');
     setTimeout(() => {
