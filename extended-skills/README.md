@@ -41,7 +41,7 @@ Some skills have companion files you should customize before first use — see e
 
 | Skill | What It Does |
 |-------|-------------|
-| [personal-advisor](personal-advisor/SKILL.md) | Life and business advisor grounded in your personal `plan.md` |
+| [ai-career-advisor](ai-career-advisor/SKILL.md) | Personalised learning roadmap with curated YouTube, articles, books, and projects for your career goal |
 | [weekend-planner](weekend-planner/SKILL.md) | Surface 10 time-sensitive local activities tailored to your family's profile |
 
 ### Builder Tools
@@ -58,8 +58,7 @@ Some skills use a companion file you fill in once. Keep these out of version con
 
 | Skill | Companion file | What to do |
 |-------|---------------|------------|
-| `personal-advisor` | `personal-advisor/plan.md` | Fill in your goals, energy, finances, life situation |
-| `weekend-planner` | shares `personal-advisor/plan.md` | Adds family profile (ages, location, walking limits) |
+| `weekend-planner` | `weekend-planner/plan.md` | Fill in family profile (ages, location, walking limits, activity preferences) |
 | `exec-reviewer` | `exec-reviewer/leader-review.md` | Built-in reviewer — or run `/exec-reviewer` to build a custom profile |
 | `spec-writer` | `spec-writer/prd-template.md` | PRD template — edit sections to match your team's format |
 | `slides` | `slides/STYLES.md`, `slides/render_slides.py` | Style reference and QA renderer — copy alongside SKILL.md |
