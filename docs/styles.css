@@ -9,8 +9,8 @@
   --bg-primary:#000;
   --text-primary:#fff;
   --text-secondary:#a3a3a3;
-  --accent:#f5c518;
-  --accent-dim:rgba(245,197,24,.15);
+  --accent:#E06B4A;
+  --accent-dim:rgba(224,107,74,.15);
   --border:rgba(255,255,255,.12);
   --surface:rgba(255,255,255,.05);
   --surface-hover:rgba(255,255,255,.08);
@@ -170,12 +170,12 @@ h1,h2,h3,h4{font-weight:700;letter-spacing:-.018em;line-height:1.06}
 
 /* ── HERO ── */
 .hero{min-height:calc(100vh - var(--nav-h));display:flex;flex-direction:column;justify-content:center;padding:clamp(3rem,7vw,7rem) clamp(1.25rem,5vw,4rem);position:relative;overflow:hidden}
-.hero-aura{position:absolute;z-index:0;pointer-events:none;width:70vw;height:70vw;left:-12vw;top:50%;background:radial-gradient(circle,rgba(245,197,24,.32),rgba(245,197,24,.09) 45%,transparent 70%);filter:blur(30px);transform:translateY(-50%);animation:heroDrift 18s ease-in-out infinite}
+.hero-aura{position:absolute;z-index:0;pointer-events:none;width:70vw;height:70vw;left:-12vw;top:50%;background:radial-gradient(circle,rgba(224,107,74,.32),rgba(224,107,74,.09) 45%,transparent 70%);filter:blur(30px);transform:translateY(-50%);animation:heroDrift 18s ease-in-out infinite}
 @keyframes heroDrift{0%{transform:translateY(-50%) translateX(-2%) scale(1)}50%{transform:translateY(-54%) translateX(5%) scale(1.1)}100%{transform:translateY(-50%) translateX(-2%) scale(1)}}
 .hero-inner{position:relative;z-index:1;max-width:900px}
 .hero h1{font-size:clamp(3rem,7.5vw,6.2rem);line-height:1.02}
 .circle-word{position:relative;display:inline-block;font-style:italic;white-space:nowrap;padding:0 .12em;isolation:isolate}
-.circle-word::before{content:"";position:absolute;inset:-35% -14%;background:radial-gradient(ellipse at center,rgba(245,197,24,.28),transparent 65%);filter:blur(22px);z-index:-2;opacity:0;transition:opacity 1.2s ease 1.4s}
+.circle-word::before{content:"";position:absolute;inset:-35% -14%;background:radial-gradient(ellipse at center,rgba(224,107,74,.28),transparent 65%);filter:blur(22px);z-index:-2;opacity:0;transition:opacity 1.2s ease 1.4s}
 .hero-loaded .circle-word::before{opacity:1;animation:wordGlow 5.4s ease-in-out 2.6s infinite}
 @keyframes wordGlow{0%,100%{opacity:.5}50%{opacity:1}}
 .circle-mark{position:absolute;left:-7%;top:-22%;width:114%;height:144%;overflow:visible;pointer-events:none;z-index:-1}
