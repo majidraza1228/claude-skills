@@ -267,6 +267,84 @@ cd claude-skills
       <div class="step-block">
         <div class="step-num">6</div>
         <div class="step-content">
+          <h3>Use agent memory — don't re-explain yourself every session</h3>
+          <p>Claude Code has a persistent memory system. Every time you correct it, confirm an approach, or share project context, it can remember that for future sessions. Most developers never set this up — and waste time re-explaining the same things repeatedly.</p>
+
+          <div class="card" style="padding:0;overflow:hidden;margin-top:.7rem">
+            <table class="trigger-table">
+              <thead>
+                <tr><th>Memory type</th><th>What to store</th><th>Example</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>User</td><td>Your preferences and working style</td><td>"I prefer terse responses, no trailing summaries"</td></tr>
+                <tr><td>Feedback</td><td>Corrections and confirmed approaches</td><td>"Don't mock the DB in tests — we got burned by divergence"</td></tr>
+                <tr><td>Project</td><td>Architecture decisions and the WHY</td><td>"Auth rewrite is driven by legal compliance, not tech debt"</td></tr>
+                <tr><td>Reference</td><td>Where things live in external systems</td><td>"Bugs tracked in Linear project INGEST"</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:1.2rem">
+            <div style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.7rem">How to trigger memory</div>
+            <div class="code-block">
+              <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Claude Code — say any of these</span></div>
+              <div class="code-body"><span class="c-str">"remember: always use PostgreSQL, never SQLite in this project"</span>
+<span class="c-str">"remember: don't mock the database in tests"</span>
+<span class="c-str">"remember: sprint tasks are tracked in Linear project CORE"</span>
+<span class="c-str">"remember: I prefer terse responses, no preamble"</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:1.2rem">
+            <div style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.7rem">CLAUDE.md — project-level memory that never expires</div>
+            <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.55;margin-bottom:.6rem">For rules that should apply every session, add them to <code style="background:rgba(255,255,255,.07);padding:.1em .35em;border-radius:4px;font-size:.88em">CLAUDE.md</code> at your project root. Claude reads this at the start of every session — no prompting needed.</p>
+            <div class="code-block">
+              <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">CLAUDE.md — example entries</span></div>
+              <div class="code-body"><span class="c-comment"># Stack</span>
+Python 3.12, FastAPI, PostgreSQL, Docker
+
+<span class="c-comment"># Never do</span>
+- Never use SQLite (even for tests)
+- Never skip --no-verify on commits
+- Never add features beyond what was asked
+
+<span class="c-comment"># Always do</span>
+- Read the file before editing it
+- Run tests before marking a task done
+- Use structured outputs (tool use / JSON) not free text</div>
+            </div>
+          </div>
+
+          <div style="margin-top:1.2rem">
+            <div style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.6rem">What NOT to put in memory</div>
+            <div class="card" style="padding:0;overflow:hidden">
+              <table class="trigger-table">
+                <thead>
+                  <tr><th>Don't store this</th><th>Why</th><th>Use instead</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Code patterns or conventions</td><td>Read the code — it's already there</td><td>Let Claude read the files</td></tr>
+                  <tr><td>Recent changes / who changed what</td><td>git log is authoritative</td><td><code>git log</code> or <code>git blame</code></td></tr>
+                  <tr><td>In-progress task state</td><td>Memory is cross-session; tasks are per-session</td><td>Use Tasks in Claude Code</td></tr>
+                  <tr><td>Debugging recipes</td><td>The fix is in the code; context belongs in commit message</td><td>Good commit messages</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="harness-callout" style="margin-top:1rem">
+            <div class="harness-icon">🧠</div>
+            <div class="harness-body">
+              <h4>Best practice: save the WHY, not the WHAT</h4>
+              <p>Memory that says "auth uses bcrypt" is useless — the code shows that. Memory that says "we switched to bcrypt because MD5 was flagged in a security audit — don't revert it" is what prevents mistakes three months later.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">7</div>
+        <div class="step-content">
           <h3>Save output to a file</h3>
           <p>Add "save to a file" to any request. Claude writes to the <code style="background:rgba(255,255,255,.07);padding:.1em .35em;border-radius:4px;font-size:.88em">output/</code> folder.</p>
           <div class="code-block">
