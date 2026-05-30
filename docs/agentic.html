@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agentic Development & Harness Engineering — AI-Powered Dev & PM Playbook</title>
-<meta name="description" content="Complete guide to agentic coding: memory types, MCP servers, eval harnesses, frameworks, and how to apply skills in agent workflows.">
+<meta name="description" content="Complete guide to agentic coding: memory types, sub-agents, MCP servers, eval harnesses, frameworks, and how to apply skills in agent workflows.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -108,7 +108,7 @@
   <div class="section-header">
     <span class="eyebrow">Agentic development</span>
     <h1 class="page-title">Build agents that work reliably</h1>
-    <p class="page-lead">Memory, MCP servers, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
+    <p class="page-lead">Memory, sub-agents, MCP servers, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
   </div>
 
   <div class="agentic-layout">
@@ -129,6 +129,10 @@
       <a class="as-item" href="#ci-gate" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">CI gate</div></a>
       <div class="as-section-label">Frameworks</div>
       <a class="as-item" href="#frameworks" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Which framework</div></a>
+      <div class="as-section-label">Sub-agents</div>
+      <a class="as-item" href="#subagents-intro" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What are sub-agents</div></a>
+      <a class="as-item" href="#subagents-patterns" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Orchestrator pattern</div></a>
+      <a class="as-item" href="#subagents-claude-code" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Claude Code workflows</div></a>
       <div class="as-section-label">MCP</div>
       <a class="as-item" href="#mcp-intro" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is MCP</div></a>
       <a class="as-item" href="#mcp-configure" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Configure MCP servers</div></a>
@@ -750,6 +754,231 @@ agent = Agent(
 
 result = agent.run_sync(<span class="c-str">"Review this PR diff: ..."</span>)
 print(result.data.verdict)   <span class="c-comment"># always a valid CodeReview object</span></div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── SUB-AGENTS INTRO ── -->
+      <div class="ag-section" id="subagents-intro">
+        <span class="ag-eyebrow">Sub-agents</span>
+        <h2 class="ag-title">What are sub-agents?</h2>
+        <p class="ag-lead">A sub-agent is a Claude instance spawned by another Claude instance (the orchestrator) to handle a specific sub-task. The orchestrator plans and delegates; sub-agents execute and report back. Each runs in its own context window — isolated, focused, and replaceable.</p>
+
+        <div class="loop-diagram" style="flex-wrap:nowrap;margin-bottom:1.5rem;gap:0">
+          <div class="loop-node accent" style="min-width:110px">Orchestrator</div>
+          <div class="loop-arrow">→</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div class="loop-node" style="min-width:130px">Sub-agent: Security</div>
+            <div class="loop-node" style="min-width:130px">Sub-agent: Tests</div>
+            <div class="loop-node" style="min-width:130px">Sub-agent: Docs</div>
+          </div>
+          <div class="loop-arrow">→</div>
+          <div class="loop-node accent" style="min-width:100px">Merged result</div>
+        </div>
+
+        <!-- Pros / Cons table -->
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table" style="font-size:.86rem">
+            <thead><tr><th style="width:30%">Pros</th><th style="width:30%">Cons</th><th>When it's worth it</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Parallel execution</strong> — multiple sub-agents run simultaneously, cutting wall-clock time</td>
+                <td><strong>Token cost multiplies</strong> — each sub-agent loads its own context, so you pay per agent</td>
+                <td>Tasks with independent parts that don't need to share state mid-run</td>
+              </tr>
+              <tr>
+                <td><strong>Specialization</strong> — each sub-agent gets its own system prompt (skill), making it better at one job</td>
+                <td><strong>No shared context</strong> — sub-agents can't read each other's messages; orchestrator must relay information explicitly</td>
+                <td>Different sub-tasks benefit from different expertise (security vs. docs vs. tests)</td>
+              </tr>
+              <tr>
+                <td><strong>Context isolation</strong> — a large codebase won't overflow the orchestrator's window; sub-agents handle the deep reads</td>
+                <td><strong>Coordination overhead</strong> — orchestrator must parse, merge, and validate each sub-agent's output</td>
+                <td>Sub-tasks each need to read large amounts of context that would overwhelm a single agent</td>
+              </tr>
+              <tr>
+                <td><strong>Failure isolation</strong> — a crashed sub-agent doesn't kill the whole workflow; retry just that worker</td>
+                <td><strong>Harder to debug</strong> — errors can occur in any sub-agent; you need logging at the orchestrator level</td>
+                <td>Reliability matters and individual steps can be retried independently</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="warn-box" style="margin-top:1rem"><strong>Don't default to sub-agents.</strong> A single well-prompted agent with the right tools handles most tasks better and cheaper. Use sub-agents when you have genuinely parallel work, context window pressure, or tasks that need different specialist prompts.</div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── ORCHESTRATOR PATTERN ── -->
+      <div class="ag-section" id="subagents-patterns">
+        <span class="ag-eyebrow">Sub-agents</span>
+        <h2 class="ag-title">The orchestrator pattern</h2>
+        <p class="ag-lead">The orchestrator breaks a goal into tasks, assigns each to a sub-agent, collects the results, and merges them into a final output. Sub-agents are stateless workers — they get a task, they return a result.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">orchestrator.py — parallel sub-agents</span></div>
+          <div class="code-body">import anthropic, asyncio, pathlib
+
+client = anthropic.Anthropic()
+
+def load_skill(name: str) -> str:
+    return (pathlib.Path.home() / f<span class="c-str">".claude/skills/{name}/SKILL.md"</span>).read_text()
+
+def run_subagent(skill_name: str, task: str) -> str:
+    <span class="c-comment">"""A focused worker: one skill, one task, one result."""</span>
+    return client.messages.create(
+        model=<span class="c-str">"claude-sonnet-4-6"</span>,
+        max_tokens=<span class="c-accent">4096</span>,
+        system=load_skill(skill_name),
+        messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: task}]
+    ).content[0].text
+
+def orchestrate_pr_review(pr_diff: str) -> dict:
+    <span class="c-comment">"""Orchestrator: run three specialist sub-agents in parallel."""</span>
+    import concurrent.futures
+
+    tasks = {
+        <span class="c-str">"security"</span>:  (<span class="c-str">"code-review"</span>,  f<span class="c-str">"Security audit only:\n{pr_diff}"</span>),
+        <span class="c-str">"tests"</span>:     (<span class="c-str">"tdd"</span>,           f<span class="c-str">"Identify missing tests:\n{pr_diff}"</span>),
+        <span class="c-str">"docs"</span>:      (<span class="c-str">"doc-writer"</span>,    f<span class="c-str">"Flag undocumented public API changes:\n{pr_diff}"</span>),
+    }
+
+    results = {}
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        futures = {
+            pool.submit(run_subagent, skill, prompt): name
+            for name, (skill, prompt) in tasks.items()
+        }
+        for future in concurrent.futures.as_completed(futures):
+            results[futures[future]] = future.result()
+
+    <span class="c-comment"># Orchestrator merges sub-agent outputs into a final review</span>
+    merged = client.messages.create(
+        model=<span class="c-str">"claude-sonnet-4-6"</span>,
+        max_tokens=<span class="c-accent">2048</span>,
+        messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>:
+            f<span class="c-str">"Merge these specialist reviews into one prioritised list:\n\n"</span>
+            f<span class="c-str">"SECURITY:\n{results['security']}\n\n"</span>
+            f<span class="c-str">"TESTS:\n{results['tests']}\n\n"</span>
+            f<span class="c-str">"DOCS:\n{results['docs']}"</span>
+        }]
+    ).content[0].text
+
+    return {<span class="c-str">"sub_agent_results"</span>: results, <span class="c-str">"merged_review"</span>: merged}</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-top:1.2rem">
+          <table class="trigger-table" style="font-size:.85rem">
+            <thead><tr><th>Rule</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Stateless workers</strong> — sub-agents take input, return output, nothing more</td><td>Makes them retryable and swappable without side effects</td></tr>
+              <tr><td><strong>Orchestrator owns state</strong> — all shared data flows through the orchestrator, never file I/O between sub-agents</td><td>Prevents race conditions and data corruption</td></tr>
+              <tr><td><strong>One skill per sub-agent</strong> — load a single SKILL.md as the system prompt</td><td>Keeps the sub-agent focused; generalist prompts produce generalist output</td></tr>
+              <tr><td><strong>Validate before merging</strong> — check sub-agent output structure before passing to orchestrator merge step</td><td>A malformed sub-agent response shouldn't corrupt the final output</td></tr>
+              <tr><td><strong>Log each sub-agent call</strong> — record input, output, latency, and model version</td><td>Debugging a multi-agent pipeline is impossible without per-agent logs</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── CLAUDE CODE WORKFLOWS ── -->
+      <div class="ag-section" id="subagents-claude-code">
+        <span class="ag-eyebrow">Sub-agents</span>
+        <h2 class="ag-title">Claude Code workflows</h2>
+        <p class="ag-lead">Claude Code has a built-in Agent tool that lets it spawn sub-agents natively — without any Python orchestrator code. You describe the workflow in a prompt or skill; Claude handles the delegation. The Claude Code SDK lets you go further and drive multi-agent pipelines programmatically.</p>
+
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.8rem">How it works in Claude Code</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">When you give Claude Code a complex task, it can spawn a sub-agent (another <code>claude</code> process) to handle part of it — in a git worktree so the sub-agent works in isolation. You don't write orchestration code; Claude decides when delegation makes sense.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">tell Claude Code to use sub-agents</span></div>
+          <div class="code-body"><span class="c-comment"># Natural language — Claude decides when to spawn</span>
+<span class="c-str">"Review this PR in parallel: run security checks, generate missing tests,
+and update the changelog. Use sub-agents so the three tasks run at the same time."</span>
+
+<span class="c-comment"># Or wire it into a skill's instructions (SKILL.md)</span>
+<span class="c-comment"># The skill tells Claude how to delegate:</span>
+<span class="c-str">"Spawn three sub-agents: one for /code-review (security focus),
+one for /tdd (test gaps), one for /doc-writer (API changes).
+Merge their outputs into a single prioritised comment."</span></div>
+        </div>
+
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .8rem">Claude Code SDK — programmatic workflows</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">The Claude Code SDK lets you drive Claude Code from Python or TypeScript — useful for CI pipelines, scheduled workflows, and production agents that need the full Claude Code toolset (bash, file editing, git) without a human in the loop.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">workflow.py — Claude Code SDK</span></div>
+          <div class="code-body">import asyncio
+from claude_code_sdk import query, ClaudeCodeOptions
+
+async def run_pr_workflow(pr_diff: str):
+    <span class="c-comment"># Each query() call is a Claude Code session with full tool access</span>
+    <span class="c-comment"># (bash, file read/write, git) — not just raw API</span>
+
+    options = ClaudeCodeOptions(
+        max_turns=<span class="c-accent">10</span>,
+        system_prompt=<span class="c-str">"You are a senior engineer. Be concise and precise."</span>
+    )
+
+    <span class="c-comment"># Run specialist sub-agents in parallel using asyncio</span>
+    security_task = query(
+        prompt=f<span class="c-str">"Security review this diff. Flag CRITICAL issues only:\n{pr_diff}"</span>,
+        options=options
+    )
+    tests_task = query(
+        prompt=f<span class="c-str">"List missing test cases for this diff:\n{pr_diff}"</span>,
+        options=options
+    )
+
+    security_result, tests_result = await asyncio.gather(security_task, tests_task)
+
+    <span class="c-comment"># Collect text from streaming message events</span>
+    security_text = <span class="c-str">""</span>.join(
+        chunk.text for chunk in security_result if hasattr(chunk, <span class="c-str">"text"</span>)
+    )
+    tests_text = <span class="c-str">""</span>.join(
+        chunk.text for chunk in tests_result if hasattr(chunk, <span class="c-str">"text"</span>)
+    )
+
+    return {<span class="c-str">"security"</span>: security_text, <span class="c-str">"tests"</span>: tests_text}
+
+asyncio.run(run_pr_workflow(open(<span class="c-str">"pr.diff"</span>).read()))</div>
+        </div>
+
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">install</span></div>
+          <div class="code-body"><span class="c-accent">pip install</span> claude-code-sdk
+
+<span class="c-comment"># Requires Claude Code CLI installed and authenticated</span>
+<span class="c-accent">npm install</span> -g @anthropic-ai/claude-code</div>
+        </div>
+
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .7rem">Worktrees — isolated sub-agent environments</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">When Claude Code spawns a sub-agent for file-editing tasks, it creates a git worktree — a separate checkout of the repo the sub-agent can modify without touching your working branch. Changes merge back (or get discarded) when the sub-agent is done.</p>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table" style="font-size:.85rem">
+            <thead><tr><th>Feature</th><th>What it means for you</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Agent tool (built-in)</strong></td><td>Claude Code can delegate sub-tasks to a fresh Claude instance mid-conversation — just ask in natural language</td></tr>
+              <tr><td><strong>Worktree isolation</strong></td><td>Sub-agent edits go into a separate git branch — no risk of corrupting your working tree while the agent runs</td></tr>
+              <tr><td><strong>Parallel agents</strong></td><td>Multiple <code>claude</code> processes run simultaneously on the same repo, each in its own worktree</td></tr>
+              <tr><td><strong>SDK programmatic control</strong></td><td>Drive the full Claude Code toolset (bash, git, file I/O) from Python/TS in CI or production workflows</td></tr>
+              <tr><td><strong>Skills in workflows</strong></td><td>Each spawned agent gets its own system prompt — load a SKILL.md to make each worker a specialist</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">🤖</div>
+          <div class="apply-body">
+            <h4>Apply it — start with a two-agent workflow</h4>
+            <p>Don't start with five sub-agents. Start with one orchestrator and one worker: <code>"Use a sub-agent to run /code-review on this PR diff. Then summarise the findings for me."</code> Once that works reliably, add a second worker. Complexity compounds — add agents one at a time and test each addition.</p>
+          </div>
         </div>
       </div>
 
