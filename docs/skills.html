@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills Browser — AI-Powered Dev & PM Playbook</title>
+<meta name="description" content="Browse 32 skills for developers and PMs. Click any skill to see trigger phrases, an example, and which tools support it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">Playbook</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="skills.html" class="active">Skills</a>
+    <a href="tools.html" class="hide-sm">Tools</a>
+    <a href="patterns.html" class="hide-sm">Patterns</a>
+    <a href="https://github.com/majidraza1228/claude-skills" class="nav-gh" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="container section">
+    <div class="section-header">
+      <span class="eyebrow">32 skills</span>
+      <h1 class="page-title">Skills Browser</h1>
+      <p class="page-lead">Click any skill to see what it does, how to trigger it, an example, and which tools support it.</p>
+    </div>
+
+    <div class="filter-bar" id="filterBar"></div>
+    <div class="skills-grid" id="skillsGrid"></div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="index.html" class="footer-brand">AI-Powered Dev & PM Playbook</a>
+    <div class="footer-links">
+      <a href="skills.html">Skills</a>
+      <a href="tools.html">Tools</a>
+      <a href="patterns.html">Patterns</a>
+      <a href="https://github.com/majidraza1228/claude-skills" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <span class="footer-copy">MIT License</span>
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const CATS = [
+  {id:'all',       label:'All'},
+  {id:'dev-workflow',   label:'Dev Workflow'},
+  {id:'code-quality',  label:'Code Quality'},
+  {id:'git-release',   label:'Git & Release'},
+  {id:'data-api',      label:'Data & APIs'},
+  {id:'agent-pm',      label:'Agent PM'},
+  {id:'pm-workflow',   label:'PM Workflow'},
+  {id:'observability', label:'Observability'},
+  {id:'ai-specialisms',label:'AI Specialisms'},
+  {id:'extended',      label:'Extended'},
+];
+
+const AUD = {dev:'<span class="badge badge-dev">Dev</span>', pm:'<span class="badge badge-pm">PM</span>', both:'<span class="badge badge-both">Dev + PM</span>'};
+const TOOL_LABELS = {
+  'claude-code':'Claude Code','cursor':'Cursor','vscode':'VS Code',
+  'codex':'Codex','copilot':'Copilot','windsurf':'Windsurf','gemini':'Gemini CLI'
+};
+
+const SKILLS = [
+  // DEV WORKFLOW
+  {id:'planning',cat:'dev-workflow',catLabel:'Dev Workflow',aud:'dev',
+   name:'planning',
+   desc:'Break features into tasks with done criteria and dependencies',
+   triggers:['plan this feature','break this down','task list','create sprint tasks'],
+   example:{in:'Build a user authentication system with email + OAuth',out:'Phased task list with sizing, dependencies, and done criteria for each task'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'code-explain',cat:'dev-workflow',catLabel:'Dev Workflow',aud:'dev',
+   name:'code-explain',
+   desc:'Explain unfamiliar code, algorithms, or regex at the right depth',
+   triggers:['explain this code','what does this do','how does this work','walk me through this'],
+   example:{in:'What does this recursive memoization function do?',out:'Plain-English walkthrough with algorithm name, step-by-step trace, and time/space complexity'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'debugging',cat:'dev-workflow',catLabel:'Dev Workflow',aud:'dev',
+   name:'debugging',
+   desc:'5-step bug triage: reproduce → localize → reduce → fix → guard',
+   triggers:['debug this','fix this bug','why is this failing','I have an error I can\'t figure out'],
+   example:{in:'TypeError: Cannot read property \'map\' of undefined',out:'Root cause, minimal reproduction, fix, and a guard (test or assertion) to prevent recurrence'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'refactor',cat:'dev-workflow',catLabel:'Dev Workflow',aud:'dev',
+   name:'refactor',
+   desc:'Simplify code without changing behavior (Chesterton\'s Fence rule)',
+   triggers:['refactor this','clean up this code','simplify this function','too much duplication'],
+   example:{in:'80-line function with nested conditionals',out:'Refactored version with explanation of each change and why behavior is preserved'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'performance',cat:'dev-workflow',catLabel:'Dev Workflow',aud:'dev',
+   name:'performance',
+   desc:'Measure-first optimization: N+1 queries, caching, profiling',
+   triggers:['optimize this','slow query','performance issue','N+1 problem','this page is slow'],
+   example:{in:'Endpoint takes 4s — here\'s the query',out:'N+1 identified, rewritten query with JOIN, estimated speedup, profiling next steps'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // CODE QUALITY
+  {id:'code-review',cat:'code-quality',catLabel:'Code Quality',aud:'dev',
+   name:'code-review',
+   desc:'Structured review with severity table (CRITICAL / WARNING / NIT) and verdict',
+   triggers:['review my code','code review','find bugs','anything wrong here','LGTM?'],
+   example:{in:'auth.py: password stored as MD5',out:'| CRITICAL | auth.py:42 | MD5 broken — use bcrypt | Replace hashlib.md5 with bcrypt.hashpw |'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'security',cat:'code-quality',catLabel:'Code Quality',aud:'dev',
+   name:'security',
+   desc:'OWASP Top 10 security review — flags critical issues before merge',
+   triggers:['security review','check for vulnerabilities','is this secure','OWASP check'],
+   example:{in:'Login endpoint with SQL string interpolation',out:'SQL injection flagged CRITICAL, parameterized fix, OWASP A03 reference, test case'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'tdd',cat:'code-quality',catLabel:'Code Quality',aud:'dev',
+   name:'tdd',
+   desc:'Red-green-refactor TDD with test pyramid and worked examples',
+   triggers:['write tests','TDD this','test this function','unit test','add test coverage'],
+   example:{in:'Write tests for a user registration service',out:'Failing test first (red), minimal implementation (green), refactored with edge cases and mocks'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // GIT & RELEASE
+  {id:'commit-message',cat:'git-release',catLabel:'Git & Release',aud:'dev',
+   name:'commit-message',
+   desc:'Conventional commit formatting with worked examples',
+   triggers:['write a commit message','commit message for this','git commit','what should I write'],
+   example:{in:'Added retry logic for payment timeouts, closes #234',out:'fix: Add retry logic for payment timeout errors\n\nAdd try/catch with exponential backoff. Closes #234'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'pr-description',cat:'git-release',catLabel:'Git & Release',aud:'dev',
+   name:'pr-description',
+   desc:'PR body with what/why, test steps, and reviewer notes',
+   triggers:['write PR description','pull request body','PR summary','describe this PR'],
+   example:{in:'Diff: adds caching layer to user profile endpoint',out:'What/Why sections, test steps checklist, reviewer notes about caching strategy'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'changelog',cat:'git-release',catLabel:'Git & Release',aud:'dev',
+   name:'changelog',
+   desc:'Keep a Changelog format from commit list or git log',
+   triggers:['update changelog','changelog for this release','release notes','what changed in v2'],
+   example:{in:'git log v1.2.0..HEAD',out:'## [1.3.0] - 2026-05-30\n### Added\n### Fixed\n### Changed'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // DATA & APIS
+  {id:'api-design',cat:'data-api',catLabel:'Data & APIs',aud:'dev',
+   name:'api-design',
+   desc:'Contract-first API design with breaking change assessment',
+   triggers:['design an API','API spec','REST endpoint','is this a breaking change','OpenAPI'],
+   example:{in:'CRUD API for a task management system',out:'Endpoint contracts, request/response schemas, breaking change checklist'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'sql',cat:'data-api',catLabel:'Data & APIs',aud:'dev',
+   name:'sql',
+   desc:'Write and optimize SQL queries safely (guards on DELETE/UPDATE)',
+   triggers:['write SQL','SQL query','optimize this query','slow SQL','database query'],
+   example:{in:'Find all users inactive for 90 days',out:'Safe SELECT with explanation, then optimized version with index hint and execution plan'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'database-schema',cat:'data-api',catLabel:'Data & APIs',aud:'dev',
+   name:'database-schema',
+   desc:'Schema design with migration + rollback scripts',
+   triggers:['design a schema','database schema','migration script','table design','model this data'],
+   example:{in:'Multi-tenant SaaS with users, teams, and permissions',out:'Schema diagram, migration SQL with rollback, indexes, foreign key constraints'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // AGENT PM
+  {id:'daily-checkin',cat:'agent-pm',catLabel:'Agent PM',aud:'both',
+   name:'daily-checkin',
+   desc:'Reads git log + sprint board, writes structured entry to TEAM.md',
+   triggers:['daily check-in','log my work','standup entry','what did I do today'],
+   example:{in:'/daily-checkin (runs once per day)',out:'Structured TEAM.md entry: completed, in-progress, blockers — from real git log'},
+   tools:['claude-code']},
+
+  {id:'team-digest',cat:'agent-pm',catLabel:'Agent PM',aud:'pm',
+   name:'team-digest',
+   desc:'Reads TEAM.md + SPRINT.md, produces team summary, velocity, and blocker table',
+   triggers:['team digest','sprint status','what\'s the team doing','show blockers','velocity report'],
+   example:{in:'/team-digest',out:'Team summary, sprint velocity, blocker table with owners and days stuck'},
+   tools:['claude-code']},
+
+  // PM WORKFLOW
+  {id:'sprint-planning',cat:'pm-workflow',catLabel:'PM Workflow',aud:'both',
+   name:'sprint-planning',
+   desc:'Break a feature into sprint tasks with sizing, priority, dependencies, and risks',
+   triggers:['plan this sprint','break down this feature','sprint planning','size these tasks'],
+   example:{in:'Feature: Stripe subscription billing',out:'Sprint tasks with S/M/L sizing, priority, dependencies, and risk flags'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'ticket-writer',cat:'pm-workflow',catLabel:'PM Workflow',aud:'both',
+   name:'ticket-writer',
+   desc:'Turn rough notes into a Jira/Linear/GitHub Issue with AC and technical notes',
+   triggers:['write a ticket','create a Jira ticket','GitHub issue','turn this into a ticket'],
+   example:{in:'Users can\'t reset password when 2FA is on',out:'Jira-ready ticket: summary, steps to reproduce, acceptance criteria, technical notes, labels'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'standup-writer',cat:'pm-workflow',catLabel:'PM Workflow',aud:'both',
+   name:'standup-writer',
+   desc:'Write standup updates from git log, task list, or rough notes',
+   triggers:['write my standup','standup update','daily update','what should I report today'],
+   example:{in:'Finished auth PR. Starting billing. Blocked on design spec.',out:'Formatted standup: done / doing / blockers — no filler'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'retro',cat:'pm-workflow',catLabel:'PM Workflow',aud:'both',
+   name:'retro',
+   desc:'Sprint retro or incident post-mortem — blameless, action-oriented, with owners',
+   triggers:['run a retro','sprint retrospective','post-mortem','incident review','blameless retro'],
+   example:{in:'Sprint 12 — missed velocity, auth incident on day 3',out:'What went well / delta / actions table with owners and due dates'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // OBSERVABILITY
+  {id:'logging',cat:'observability',catLabel:'Observability',aud:'dev',
+   name:'logging',
+   desc:'Structured logging: what to log, what to redact, log levels',
+   triggers:['add logging','structured logging','what should I log','redact PII','log levels'],
+   example:{in:'Payment processing function',out:'Structured log calls with correct levels, redacted PII fields, correlation IDs'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'doc-generator',cat:'observability',catLabel:'Observability',aud:'dev',
+   name:'doc-generator',
+   desc:'Generate documentation from code — functions, classes, APIs',
+   triggers:['document this','write docs','generate documentation','add docstrings','JSDoc'],
+   example:{in:'Python class with 6 methods, no docstrings',out:'Docstrings for class and each method with params, returns, raises, examples'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // AI SPECIALISMS
+  {id:'harness-engineering',cat:'ai-specialisms',catLabel:'AI Specialisms',aud:'dev',
+   name:'harness-engineering',
+   desc:'Build AI eval harnesses (test cases, runner, CI) or set up Harness.io CI/CD',
+   triggers:['build an eval harness','test my prompts','LLM regression tests','Harness.io pipeline','feature flags'],
+   example:{in:'Test that my code-review skill always returns a severity table',out:'YAML test cases (golden + adversarial + consistency), Python assertion runner, GitHub Actions CI'},
+   tools:['claude-code','cursor','vscode','codex']},
+
+  {id:'forward-deployed-engineering',cat:'ai-specialisms',catLabel:'AI Specialisms',aud:'both',
+   name:'forward-deployed-engineering',
+   desc:'FDE career roadmap (Palantir/Anduril/Scale AI) and day-to-day FDE practice frameworks',
+   triggers:['forward deployed engineer','FDE role','how do I become an FDE','technical discovery','enterprise deployment'],
+   example:{in:'Backend engineer wanting to move into FDE at Palantir',out:'3-phase roadmap, skills table, interview prep (coding + customer sim + deployment challenge)'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  // EXTENDED
+  {id:'strategy-writer',cat:'extended',catLabel:'Extended — Product',aud:'pm',
+   name:'strategy-writer',
+   desc:'Shape a one-page product strategy: problem, vision, principles, strategy, milestones',
+   triggers:['write a strategy','product strategy','one-page strategy','strategy doc'],
+   example:{in:'B2B analytics tool for operations teams',out:'One-page strategy: framing, vision, 3 principles, strategy statement, 6-month milestones'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'spec-writer',cat:'extended',catLabel:'Extended — Product',aud:'pm',
+   name:'spec-writer',
+   desc:'Turn rough notes into a build-ready PRD using a structured template',
+   triggers:['write a spec','PRD','product requirements','turn these notes into a spec'],
+   example:{in:'Users need CSV export, requested by 3 enterprise customers',out:'Full PRD: problem, goals, non-goals, requirements, UX notes, out of scope, open questions'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'exec-reviewer',cat:'extended',catLabel:'Extended — Product',aud:'pm',
+   name:'exec-reviewer',
+   desc:'Stress-test a plan or doc the way a sharp exec would',
+   triggers:['review this plan','exec review','what would a VP say','poke holes in this'],
+   example:{in:'6-month roadmap for payment infrastructure rewrite',out:'3 risks, 2 unanswered questions, 1 assumption that needs validation'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'infographic-designer',cat:'extended',catLabel:'Extended — Writing',aud:'pm',
+   name:'infographic-designer',
+   desc:'Build a structured 9:16 infographic prompt and generate it with image AI',
+   triggers:['create an infographic','design an infographic','visual summary','infographic from this'],
+   example:{in:'Our team ships 40% faster after adopting this playbook',out:'9:16 prompt with layout, palette, copy hierarchy, generation-ready format'},
+   tools:['claude-code']},
+
+  {id:'slides',cat:'extended',catLabel:'Extended — Writing',aud:'both',
+   name:'slides',
+   desc:'Generate a full HTML slide deck — Dark/Light/Corporate themes, 12 slide formats',
+   triggers:['create slides','make a presentation','slide deck','HTML slides','present this'],
+   example:{in:'Pitch deck for an AI-powered code review tool',out:'Full HTML slide deck, 8–12 slides, Dark theme, animations, Visual QA notes'},
+   tools:['claude-code']},
+
+  {id:'ai-career-advisor',cat:'extended',catLabel:'Extended — Personal',aud:'dev',
+   name:'ai-career-advisor',
+   desc:'Personalised roadmap with YouTube, articles, books, and projects for your career goal',
+   triggers:['what should I learn','career advice','learning roadmap','how do I become an FDE','harness engineering career'],
+   example:{in:'Frontend dev, 2yr experience, want FDE at Palantir',out:'3-phase roadmap with specific YouTube channels, books, projects, and weekly routine'},
+   tools:['claude-code','cursor','vscode','codex','copilot','windsurf','gemini']},
+
+  {id:'weekend-planner',cat:'extended',catLabel:'Extended — Personal',aud:'both',
+   name:'weekend-planner',
+   desc:'Surface 10 time-sensitive local activities tailored to your family\'s profile',
+   triggers:['plan my weekend','things to do this weekend','weekend activities','what\'s on near me'],
+   example:{in:'Family of 4, kids 6 and 9, London, rainy Saturday',out:'10 ranked activities with booking links, age-suitability, and 3 backup options'},
+   tools:['claude-code']},
+
+  {id:'skill-editor',cat:'extended',catLabel:'Extended — Builder',aud:'dev',
+   name:'skill-editor',
+   desc:'Audit and tighten an existing SKILL.md — cuts bloat, fixes structure, evals before shipping',
+   triggers:['edit this skill','audit my skill','improve this SKILL.md','skill is too long','fix my skill'],
+   example:{in:'A 700-line SKILL.md with vague descriptions',out:'Audit report: pattern violations flagged, trimmed version under 500 lines, eval test cases added'},
+   tools:['claude-code']},
+];
+
+// ── Build filter bar ──────────────────────────────────────────
+const filterBar = document.getElementById('filterBar');
+CATS.forEach(c => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn' + (c.id === 'all' ? ' active' : '');
+  btn.dataset.cat = c.id;
+  btn.textContent = c.label;
+  filterBar.appendChild(btn);
+});
+
+filterBar.addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cat = btn.dataset.cat;
+  document.querySelectorAll('.skill-card').forEach(card => {
+    const match = cat === 'all' || card.dataset.cat === cat;
+    card.classList.toggle('hidden', !match);
+  });
+});
+
+// ── Build skills grid ─────────────────────────────────────────
+const grid = document.getElementById('skillsGrid');
+SKILLS.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'skill-card fade-up';
+  card.dataset.cat = s.cat;
+  card.dataset.id = s.id;
+  card.innerHTML = `
+    <div class="skill-card-top">
+      <span class="badge badge-cat">${s.catLabel}</span>
+      ${AUD[s.aud]}
+    </div>
+    <div class="skill-name">${s.name}</div>
+    <div class="skill-desc">${s.desc}</div>
+    <div class="skill-triggers">
+      <span class="skill-trigger-hint">${s.triggers[0]}</span>
+      ${s.triggers[1] ? ` &middot; <span class="skill-trigger-hint">${s.triggers[1]}</span>` : ''}
+    </div>`;
+  grid.appendChild(card);
+});
+
+// ── Modal ─────────────────────────────────────────────────────
+const modalBg = document.getElementById('modalBg');
+const modalContent = document.getElementById('modalContent');
+
+function openModal(skill) {
+  const toolChips = skill.tools.map(t => `<span class="tool-chip">${TOOL_LABELS[t]}</span>`).join('');
+  const triggerChips = skill.triggers.map(t => `<span class="trigger-chip">${t}</span>`).join('');
+  const ghPath = skill.cat.startsWith('extended') ? `extended-skills/${skill.id}` : `dev-pm-skills/${skill.id}`;
+  modalContent.innerHTML = `
+    <div class="modal-name">${skill.name}</div>
+    <div class="modal-badges">
+      <span class="badge badge-cat">${skill.catLabel}</span>
+      ${AUD[skill.aud]}
+    </div>
+    <p style="font-size:.95rem;color:var(--text-secondary);line-height:1.55">${skill.desc}</p>
+    <div class="modal-section">
+      <div class="modal-section-title">How to trigger</div>
+      <div class="trigger-chips">${triggerChips}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Example</div>
+      <div class="modal-example">
+        <div class="modal-ex-row">
+          <span class="modal-ex-label">In</span>
+          <span class="modal-ex-val">${skill.example.in}</span>
+          <span class="modal-ex-label">Out</span>
+          <span class="modal-ex-val" style="color:var(--accent)">${skill.example.out}</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Works with</div>
+      <div class="tool-chips">${toolChips}</div>
+    </div>
+    <a href="https://github.com/majidraza1228/claude-skills/tree/main/${ghPath}/SKILL.md"
+       class="modal-gh-link" target="_blank" rel="noopener">View source on GitHub →</a>`;
+  modalBg.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalBg.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+grid.addEventListener('click', e => {
+  const card = e.target.closest('.skill-card');
+  if (!card) return;
+  const skill = SKILLS.find(s => s.id === card.dataset.id);
+  if (skill) openModal(skill);
+});
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Fade-up on scroll ─────────────────────────────────────────
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fadeObs.unobserve(e.target); } });
+}, { threshold: .08 });
+document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+</script>
+</body>
+</html>

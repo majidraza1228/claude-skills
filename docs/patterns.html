@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 Patterns — AI-Powered Dev & PM Playbook</title>
+<meta name="description" content="7 patterns for writing better AI skills + 4 patterns for developers and PMs building AI features.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.pattern-group{margin-bottom:3.5rem}
+.pattern-group-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.6rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.group-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-dim);display:grid;place-items:center;font-size:1.2rem;flex-shrink:0}
+.group-title{font-size:1.3rem;font-weight:700}
+.group-desc{font-size:.9rem;color:var(--text-secondary);margin-top:.2rem}
+.ai-group .group-icon{background:rgba(160,100,255,.12)}
+.ai-group .group-title .accentword{color:rgba(195,150,255,.9)}
+.ai-group .acc.open .acc-num{background:rgba(160,100,255,.7);border-color:rgba(160,100,255,.7);color:#fff}
+
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+@media(max-width:640px){.before-after{grid-template-columns:1fr}}
+.ba-label{font-size:.72rem;text-transform:uppercase;font-weight:700;letter-spacing:.1em;margin-bottom:.5rem}
+.ba-bad .ba-label{color:rgba(255,110,100,.8)}
+.ba-good .ba-label{color:var(--accent)}
+.ba-bad .code-block{border-color:rgba(255,80,80,.25)}
+.ba-good .code-block{border-color:rgba(245,197,24,.2)}
+
+.takeaway{background:rgba(255,255,255,.03);border-left:2px solid var(--accent);padding:.75rem 1rem;border-radius:0 8px 8px 0;margin-top:1rem;font-size:.9rem;line-height:1.55;color:var(--text-secondary)}
+.takeaway strong{color:var(--text-primary)}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">Playbook</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="skills.html" class="hide-sm">Skills</a>
+    <a href="tools.html" class="hide-sm">Tools</a>
+    <a href="patterns.html" class="active">Patterns</a>
+    <a href="https://github.com/majidraza1228/claude-skills" class="nav-gh" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="container section">
+    <div class="section-header">
+      <span class="eyebrow">11 patterns</span>
+      <h1 class="page-title">Patterns that <span class="accentword">actually work</span></h1>
+      <p class="page-lead">Built from 75+ tests. Every pattern fixes a specific failure mode — skills that don't trigger, output that drifts, AI features shipped without success criteria.</p>
+    </div>
+
+    <!-- SKILL DESIGN PATTERNS -->
+    <div class="pattern-group">
+      <div class="pattern-group-header">
+        <div class="group-icon">⚡</div>
+        <div>
+          <div class="group-title">Skill Design <span style="color:var(--text-secondary);font-weight:400;font-size:1rem">— for anyone writing SKILL.md files</span></div>
+          <div class="group-desc">Patterns 1–7. Each one fixes a failure mode found across 75+ real skill tests.</div>
+        </div>
+      </div>
+
+      <div class="acc" id="p1">
+        <div class="acc-hd" onclick="toggle('p1')">
+          <div class="acc-num">01</div>
+          <div class="acc-label">
+            <div class="acc-title">Descriptions ≥ 150 chars</div>
+            <div class="acc-problem">Skill never triggers</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Claude matches user prompts against skill descriptions at routing time. A 54-character description has too few words to match on — the skill stays invisible.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — 54 chars</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">description: <span class="c-str">"Review code for bugs and style issues"</span></div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — 280 chars</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">description: <span class="c-accent">&gt;</span>
+  Use this skill when the user asks for a
+  code review, wants feedback on their code,
+  asks to find bugs, requests style checks,
+  or pastes code and says 'what do you think'
+  or 'anything wrong here'. Covers Python,
+  JavaScript, TypeScript, Go, Rust.</div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Target 150–300 chars. Add 3–5 alternate trigger phrases users actually say. Include languages or domains the skill covers.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p2">
+        <div class="acc-hd" onclick="toggle('p2')">
+          <div class="acc-num">02</div>
+          <div class="acc-label">
+            <div class="acc-title">Exclusions belong in the description</div>
+            <div class="acc-problem">Wrong skill loads</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>"Do not use for spreadsheets" on line 45 of the skill body fires <em>after</em> the wrong skill has already loaded. Descriptions are read at routing time; the body is read at execution time.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — exclusion in body (too late)</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body"><span class="c-comment"># line 45 of SKILL.md body:</span>
+Do not use this skill for spreadsheets.</div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — exclusion in description</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">description: <span class="c-accent">&gt;</span>
+  Use for Word documents (.docx).
+  <span class="c-accent">Do NOT use for spreadsheets</span> — use /xlsx.
+  <span class="c-accent">Do NOT use for PDFs</span> — use /pdf.</div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Every "do not use for X" must include "use /Y instead." Without a redirect, Claude knows this skill is wrong but doesn't know what's right.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p3">
+        <div class="acc-hd" onclick="toggle('p3')">
+          <div class="acc-num">03</div>
+          <div class="acc-label">
+            <div class="acc-title">Direct imperative tone</div>
+            <div class="acc-problem">Vague, hedging output</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Claude mirrors the tone of instructions. Hedging language produces hedging output.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — tentative</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">Could you take a look and maybe
+check if there are any issues?</div></div>
+                <div style="margin-top:.5rem;font-size:.85rem;color:var(--text-secondary)">Output: "You might want to consider renaming this variable — it could be a bit clearer."</div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — direct</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body"><span class="c-accent">Flag</span> every issue. <span class="c-accent">Classify</span> severity:
+critical, warning, nit. Reference exact
+line. Do not soften language.</div></div>
+                <div style="margin-top:.5rem;font-size:.85rem;color:var(--accent)">Output: "| CRITICAL | auth.py:42 | SQL injection |"</div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Replace hedge words (maybe, could, might, consider) with imperatives: Flag, List, Output, Return, Classify.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p4">
+        <div class="acc-hd" onclick="toggle('p4')">
+          <div class="acc-num">04</div>
+          <div class="acc-label">
+            <div class="acc-title">Three-column source tables</div>
+            <div class="acc-problem">Missing or wrong data</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>"Check the relevant files" forces Claude to guess which files, where they are, and what to extract. It guesses wrong.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — vague</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">Before generating the report, check
+the relevant configuration files and
+extract the necessary settings.</div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — explicit table</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">| Source      | Path              | Extract        |
+|-------------|-------------------|----------------|
+| App config  | /config/app.yaml  | name, version  |
+| DB settings | /config/db.yml    | host, port     |
+| Flags       | /config/flags.json| enabled keys   |</div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Replace every "check", "look at", or "review" without specifics with a Source / Path / What to Extract table.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p5">
+        <div class="acc-hd" onclick="toggle('p5')">
+          <div class="acc-num">05</div>
+          <div class="acc-label">
+            <div class="acc-title">Output templates prevent drift</div>
+            <div class="acc-problem">Format changes every run</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Same skill, same prompt, three mornings, three different output structures. "Analyze the git commit and write a summary" → Monday: plain text. Tuesday: markdown headers. Wednesday: bullet list.</p>
+            <div class="code-block" style="margin-top:.8rem">
+              <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Output template</span></div>
+              <div class="code-body">Format every commit analysis using this exact template:
+
+<span class="c-accent">---
+**Commit:** {short_hash} — {title}
+**Risk:** {Critical | High | Medium | Low}
+
+**What changed:**
+- {file_path}: {one-line description}
+
+**Why it matters:** {1-2 sentences on impact}
+---</span></div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Define exact output structure. Use <code>{placeholder}</code> syntax. Run the same prompt 3× — if format differs, add a template.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p6">
+        <div class="acc-hd" onclick="toggle('p6')">
+          <div class="acc-num">06</div>
+          <div class="acc-label">
+            <div class="acc-title">One example beats five rules</div>
+            <div class="acc-problem">Inconsistent structure</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>12 formatting rules → inconsistent output across runs. 2 worked examples → identical output every time. Rules require interpretation. An example showing <code>fix: Add retry logic</code> is unambiguous.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — rules only</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">1. Use imperative mood
+2. Start with type prefix
+3. Subject under 72 chars
+4. Blank line after subject
+5. Explain why, not how
+...8 more rules...</div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — worked example</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">INPUT: Added retry logic for payment
+timeouts. Closes #234.
+
+OUTPUT:
+<span class="c-accent">fix: Add retry logic for payment timeouts
+
+Add try/catch with exponential backoff.
+Retry up to 3 times before failing.
+
+Closes #234</span></div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> For every skill with more than 5 formatting rules, add 1–2 worked examples with real input → exact expected output.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p7">
+        <div class="acc-hd" onclick="toggle('p7')">
+          <div class="acc-num">07</div>
+          <div class="acc-label">
+            <div class="acc-title">Skills under 500 lines</div>
+            <div class="acc-problem">Bottom-half instructions ignored</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>In an 800-line fitness skill, safety rules at line 700+ never fired. Not once in 75+ tests. Claude's attention to instructions degrades with length — line position is a priority ranking.</p>
+            <div class="code-block" style="margin-top:.8rem">
+              <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Attention map</span></div>
+              <div class="code-body">Lines 1–100:   Core logic         <span class="c-accent">✓ Always works</span>
+Lines 100–200: Feature detail     <span class="c-accent">✓ Always works</span>
+Lines 200–350: Secondary rules    <span class="c-dim">⚠ Usually works</span>
+Lines 350–500: Edge cases         <span class="c-dim">⚠ Sometimes</span>
+Lines 500–650: Recovery logic     <span class="c-comment">✗ Unreliable</span>
+Lines 650–800: Safety warnings    <span class="c-comment">✗ Never fires</span></div>
+            </div>
+            <div class="takeaway"><strong>Fix A:</strong> Move safety-critical rules to the first 100 lines. <strong>Fix B:</strong> Split skills over 500 lines into focused sub-skills — see <code>dev-pm-skills/fitness-coach/</code> for the pattern.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUILDING WITH AI PATTERNS -->
+    <div class="pattern-group ai-group">
+      <div class="pattern-group-header">
+        <div class="group-icon" style="background:rgba(160,100,255,.12);font-size:1.2rem">🔷</div>
+        <div>
+          <div class="group-title">Building with <span class="accentword">AI</span> <span style="color:var(--text-secondary);font-weight:400;font-size:1rem">— for developers and PMs</span></div>
+          <div class="group-desc">Patterns 8–11. For teams shipping AI features, not just writing skills.</div>
+        </div>
+      </div>
+
+      <div class="acc" id="p8">
+        <div class="acc-hd" onclick="toggle('p8')">
+          <div class="acc-num">08</div>
+          <div class="acc-label">
+            <div class="acc-title">Parse structure, not text</div>
+            <div class="acc-problem">Regex on AI output breaks silently</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Free-text output looks stable until it isn't. One preamble sentence — "Here's my review:" — and <code>response.split('\n')[0]</code> returns the wrong value with no error. Use tool use / JSON schema for any AI output consumed by code.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — fragile</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">text = response.content[0].text
+severity = text.split(<span class="c-str">'\n'</span>)[0]
+              .split(<span class="c-str">':'</span>)[1].strip()
+<span class="c-comment"># Breaks if model adds preamble</span></div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — tool use</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">tools = [{<span class="c-str">"name"</span>: <span class="c-str">"review_result"</span>,
+  <span class="c-str">"input_schema"</span>: {
+    <span class="c-str">"properties"</span>: {
+      <span class="c-str">"severity"</span>: {<span class="c-str">"enum"</span>: [<span class="c-str">"critical"</span>,...]},
+      <span class="c-str">"issues"</span>: {<span class="c-str">"type"</span>: <span class="c-str">"array"</span>}
+    }}}]
+result = response.content[0].input
+<span class="c-accent"># Always a dict — no parsing needed</span></div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Any AI output consumed by code must use tool use or a JSON schema. Free-text output is fine for humans — not for anything downstream.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p9">
+        <div class="acc-hd" onclick="toggle('p9')">
+          <div class="acc-num">09</div>
+          <div class="acc-label">
+            <div class="acc-title">Eval before merge, not after</div>
+            <div class="acc-problem">Prompt changes silently break behavior</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>Developers run tests before merging code. They don't run tests before merging a SKILL.md change. A prompt is treated like documentation, not like code — until it breaks production.</p>
+            <div class="code-block" style="margin-top:.8rem">
+              <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">.github/workflows/eval.yml</span></div>
+              <div class="code-body">name: Skill evals
+on: [push, pull_request]
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install anthropic pyyaml
+      - run: <span class="c-accent">python evals/runner.py</span>
+               evals/code-review.yaml
+               dev-pm-skills/code-review/SKILL.md
+        env:
+          ANTHROPIC_API_KEY: <span class="c-str">${{ secrets.ANTHROPIC_API_KEY }}</span>
+<span class="c-comment"># Exits 1 on any failure — blocks merge</span></div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> A SKILL.md change without an eval run is a deploy without tests. See <code>harness-engineering</code> skill for the full runner setup.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p10">
+        <div class="acc-hd" onclick="toggle('p10')">
+          <div class="acc-num">10</div>
+          <div class="acc-label">
+            <div class="acc-title">Define "correct" before building</div>
+            <div class="acc-problem">No way to know if the feature is working</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>PMs write acceptance criteria like "the AI should give relevant suggestions." Relevant is not a test. The AI sounds equally confident whether right or wrong — without measurable criteria, there's no way to ship with confidence.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — unmeasurable</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">Acceptance criteria:
+- AI generates 3+ suggestions
+- Suggestions are relevant
+- Response loads in &lt;5s</div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — measurable</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body"><span class="c-accent">Correctness:</span>  8/10 match expert golden set
+<span class="c-accent">Precision:</span>    0 contradict a dependency
+<span class="c-accent">Latency:</span>      P95 &lt; 3s at launch
+<span class="c-accent">Kill threshold:</span> acceptance rate &lt; 20%
+              = rollback or rework</div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Write measurable success criteria before the first prompt. Set a kill threshold — if metric Y drops below Z, the feature gets rolled back.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" id="p11">
+        <div class="acc-hd" onclick="toggle('p11')">
+          <div class="acc-num">11</div>
+          <div class="acc-label">
+            <div class="acc-title">Token cost is a product constraint</div>
+            <div class="acc-problem">$0.40/request discovered at billing</div>
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5 7l5 5 5-5"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-content">
+            <p>A feature costing $0.40/request looks fine with 10 test users. At 10,000 DAUs it's $4,000/day. Devs think in latency. PMs think in user value. Neither thinks in token budget during design.</p>
+            <div class="before-after">
+              <div class="ba-bad">
+                <div class="ba-label">Before — unbounded context</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body">client.messages.create(
+  model=<span class="c-str">"claude-opus-4-6"</span>,   <span class="c-comment"># always Opus</span>
+  system=full_prompt,          <span class="c-comment"># 2k tokens</span>
+  messages=full_history        <span class="c-comment"># grows forever</span>
+)
+<span class="c-comment"># Day 1: 3k tokens. Day 30: 40k tokens.</span></div></div>
+              </div>
+              <div class="ba-good">
+                <div class="ba-label">After — token-aware</div>
+                <div class="code-block"><div class="code-hd"><div class="dots"><s></s><s></s><s></s></div></div><div class="code-body"><span class="c-comment"># Cache static system prompt (once)</span>
+<span class="c-comment"># Summarise history > 5 turns</span>
+<span class="c-comment"># Chunk docs — relevant section only</span>
+<span class="c-comment"># Use Haiku for triage, Sonnet for gen</span>
+<span class="c-accent">model = "claude-haiku-4-5"</span>   <span class="c-comment"># 10× cheaper</span></div></div>
+              </div>
+            </div>
+            <div class="takeaway"><strong>Rule:</strong> Estimate token cost per request at design time: (system + avg context + avg response) × model price. Pick model tier by task — don't default to Opus for everything.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <footer class="site-footer">
+    <a href="index.html" class="footer-brand">AI-Powered Dev & PM Playbook</a>
+    <div class="footer-links">
+      <a href="skills.html">Skills</a>
+      <a href="tools.html">Tools</a>
+      <a href="patterns.html">Patterns</a>
+      <a href="https://github.com/majidraza1228/claude-skills" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <span class="footer-copy">MIT License</span>
+  </footer>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  const wasOpen = el.classList.contains('open');
+  el.classList.toggle('open', !wasOpen);
+}
+
+// Open first pattern by default
+document.getElementById('p1').classList.add('open');
+</script>
+</body>
+</html>

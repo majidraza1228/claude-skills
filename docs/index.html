@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Developer & PM Playbook</title>
+<meta name="description" content="24 skills for dev workflow, code quality, git, data, and agent PM — works in Claude Code, Cursor, VS Code, Codex, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.feature-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,1.8vw,1.4rem);margin-top:clamp(2rem,4vw,3rem)}
+@media(max-width:768px){.feature-cards{grid-template-columns:1fr}}
+.feat-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-dim);display:grid;place-items:center;margin-bottom:1rem;font-size:1.4rem}
+.feat-title{font-size:1.15rem;font-weight:700;margin-bottom:.4rem}
+.feat-body{font-size:.92rem;color:var(--text-secondary);line-height:1.5}
+.feat-link{display:inline-block;margin-top:1rem;font-size:.88rem;font-weight:700;color:var(--accent);text-decoration:none}
+.feat-link:hover{text-decoration:underline}
+
+.tools-section{padding:clamp(2.5rem,5vw,4rem) clamp(1.25rem,5vw,4rem);background:rgba(255,255,255,.025);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.tools-title{font-size:clamp(1rem,1.6vw,1.2rem);color:var(--text-secondary);font-weight:600;margin-bottom:1.4rem;text-align:center}
+
+.how-section{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.5rem)}
+@media(max-width:768px){.how-section{grid-template-columns:1fr}}
+.how-step{display:flex;gap:1rem;align-items:flex-start}
+.how-num{width:30px;height:30px;border-radius:50%;background:var(--accent-dim);border:1.5px solid rgba(245,197,24,.3);display:grid;place-items:center;font-size:.82rem;font-weight:700;color:var(--accent);flex-shrink:0;margin-top:.1rem}
+.how-body h4{font-size:.98rem;font-weight:700;margin-bottom:.3rem}
+.how-body p{font-size:.88rem;color:var(--text-secondary);line-height:1.5}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">Playbook</a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="skills.html" class="hide-sm">Skills</a>
+    <a href="tools.html" class="hide-sm">Tools</a>
+    <a href="patterns.html" class="hide-sm">Patterns</a>
+    <a href="https://github.com/majidraza1228/claude-skills" class="nav-gh" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-aura"></div>
+    <div class="hero-inner">
+      <span class="eyebrow">Developer & PM Playbook</span>
+      <h1>AI-Powered
+        <br><span class="circle-word">Playbook
+          <svg class="circle-mark" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M 364 32 C 286 4, 78 6, 22 34 C -22 60, -4 104, 92 118 C 240 134, 380 118, 392 80 C 402 48, 386 38, 364 32"/>
+          </svg>
+        </span>
+      </h1>
+      <p class="hero-sub">24 skills for dev workflow, code review, git, data, and agent-driven PM — works in Claude Code, Cursor, VS Code, Codex, and more.</p>
+      <div class="hero-ctas">
+        <a href="skills.html" class="btn-primary">Explore skills →</a>
+        <a href="tools.html" class="btn-outline">Pick your tool</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num" data-count="24">0</div>
+      <div class="stat-label">Skills</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-count="11">0</div>
+      <div class="stat-label">Patterns</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-count="7">0</div>
+      <div class="stat-label">Tools supported</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-count="75">0</div>
+      <div class="stat-label">Tests run</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="container section">
+    <div class="section-header">
+      <span class="eyebrow">What's inside</span>
+      <h2 class="section-title">Skills, patterns, and multi-tool support</h2>
+      <p class="section-lead">Every skill is a plain Markdown file. The same file works across 7 different AI coding tools — only the loading mechanism changes.</p>
+    </div>
+    <div class="feature-cards stagger">
+      <div class="card fade-up">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Skills Browser</div>
+        <div class="feat-body">24 dev-pm skills and 8 extended skills. Click any skill to see trigger phrases, an example, and which tools support it.</div>
+        <a href="skills.html" class="feat-link">Browse all skills →</a>
+      </div>
+      <div class="card fade-up">
+        <div class="feat-icon">🔷</div>
+        <div class="feat-title">11 Patterns</div>
+        <div class="feat-body">7 patterns for writing better skills + 4 for devs and PMs building AI features. Each solves a specific, tested failure mode.</div>
+        <a href="patterns.html" class="feat-link">See the patterns →</a>
+      </div>
+      <div class="card fade-up">
+        <div class="feat-icon">🛠</div>
+        <div class="feat-title">Multi-tool support</div>
+        <div class="feat-body">Claude Code, Cursor, VS Code (Copilot/Cline/Continue), Codex, Windsurf, Gemini CLI. One export script, seven outputs.</div>
+        <a href="tools.html" class="feat-link">See setup guides →</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- TOOLS STRIP -->
+  <div class="tools-section">
+    <p class="tools-title">Works with every major AI coding tool</p>
+    <div class="tools-strip" style="justify-content:center">
+      <a href="tools.html#claude-code" class="tool-pill"><span class="tool-pill-icon">🤖</span>Claude Code</a>
+      <a href="tools.html#cursor" class="tool-pill"><span class="tool-pill-icon">✦</span>Cursor</a>
+      <a href="tools.html#vscode" class="tool-pill"><span class="tool-pill-icon">💙</span>VS Code</a>
+      <a href="tools.html#codex" class="tool-pill"><span class="tool-pill-icon">◆</span>Codex</a>
+      <a href="tools.html#copilot" class="tool-pill"><span class="tool-pill-icon">🐙</span>Copilot</a>
+      <a href="tools.html#windsurf" class="tool-pill"><span class="tool-pill-icon">🏄</span>Windsurf</a>
+      <a href="tools.html#gemini" class="tool-pill"><span class="tool-pill-icon">♊</span>Gemini CLI</a>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="container section">
+    <div class="section-header">
+      <span class="eyebrow">How it works</span>
+      <h2 class="section-title">Up and running in three steps</h2>
+    </div>
+    <div class="how-section stagger">
+      <div class="how-step fade-up">
+        <div class="how-num">1</div>
+        <div class="how-body">
+          <h4>Clone the repo</h4>
+          <p>Fork or clone to get all 32 skills and the install scripts. Everything is plain Markdown — no dependencies.</p>
+          <div class="code-block" style="margin-top:.7rem">
+            <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">terminal</span></div>
+            <div class="code-body"><span class="c-accent">git clone</span> https://github.com/
+  majidraza1228/claude-skills.git</div>
+          </div>
+        </div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">2</div>
+        <div class="how-body">
+          <h4>Install for your tool</h4>
+          <p>One command installs all skills globally for Claude Code, or exports them formatted for Cursor, VS Code, Codex, and more.</p>
+          <div class="code-block" style="margin-top:.7rem">
+            <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">install</span></div>
+            <div class="code-body"><span class="c-comment"># Claude Code</span>
+./scripts/install-skills.sh <span class="c-accent">--global</span>
+<span class="c-comment"># Any other tool</span>
+./scripts/export-skills.sh <span class="c-accent">cursor</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">3</div>
+        <div class="how-body">
+          <h4>Trigger with natural language</h4>
+          <p>In Claude Code, skills auto-route from what you type. In other tools, @mention or use #file: to load the right skill.</p>
+          <div class="code-block" style="margin-top:.7rem">
+            <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">Claude Code</span></div>
+            <div class="code-body"><span class="c-str">"review my code"</span>       <span class="c-comment">→ /code-review</span>
+<span class="c-str">"plan this feature"</span>    <span class="c-comment">→ /planning</span>
+<span class="c-str">"write a ticket"</span>       <span class="c-comment">→ /ticket-writer</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <a href="index.html" class="footer-brand">AI-Powered Dev & PM Playbook</a>
+    <div class="footer-links">
+      <a href="skills.html">Skills</a>
+      <a href="tools.html">Tools</a>
+      <a href="patterns.html">Patterns</a>
+      <a href="https://github.com/majidraza1228/claude-skills" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <span class="footer-copy">MIT License</span>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+// Hero circle-word animation
+window.addEventListener('load', () => {
+  document.getElementById('hero').classList.add('hero-loaded');
+});
+
+// Count-up animation
+const counts = document.querySelectorAll('[data-count]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = +el.dataset.count;
+    const dur = 900;
+    const start = performance.now();
+    const tick = now => {
+      const p = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(ease * target);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    observer.unobserve(el);
+  });
+}, { threshold: .5 });
+counts.forEach(el => observer.observe(el));
+
+// Fade-up on scroll
+const fades = document.querySelectorAll('.fade-up');
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fadeObs.unobserve(e.target); } });
+}, { threshold: .15 });
+fades.forEach(el => fadeObs.observe(el));
+</script>
+</body>
+</html>
