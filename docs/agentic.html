@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agentic Development & Harness Engineering — AI-Powered Dev & PM Playbook</title>
-<meta name="description" content="Complete guide to agentic coding: memory types, eval harnesses, frameworks, and how to apply skills in agent workflows.">
+<meta name="description" content="Complete guide to agentic coding: memory types, MCP servers, eval harnesses, frameworks, and how to apply skills in agent workflows.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -108,7 +108,7 @@
   <div class="section-header">
     <span class="eyebrow">Agentic development</span>
     <h1 class="page-title">Build agents that work reliably</h1>
-    <p class="page-lead">Memory, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
+    <p class="page-lead">Memory, MCP servers, harnesses, frameworks, and how to wire skills into agents. Take the concepts here and apply them using the skills in this playbook.</p>
   </div>
 
   <div class="agentic-layout">
@@ -129,6 +129,10 @@
       <a class="as-item" href="#ci-gate" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">CI gate</div></a>
       <div class="as-section-label">Frameworks</div>
       <a class="as-item" href="#frameworks" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Which framework</div></a>
+      <div class="as-section-label">MCP</div>
+      <a class="as-item" href="#mcp-intro" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is MCP</div></a>
+      <a class="as-item" href="#mcp-configure" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Configure MCP servers</div></a>
+      <a class="as-item" href="#mcp-custom" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Build a custom server</div></a>
       <div class="as-section-label">Apply it</div>
       <a class="as-item" href="#skills-in-agents" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Skills inside agents</div></a>
       <a class="as-item" href="#production" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Production checklist</div></a>
@@ -746,6 +750,208 @@ agent = Agent(
 
 result = agent.run_sync(<span class="c-str">"Review this PR diff: ..."</span>)
 print(result.data.verdict)   <span class="c-comment"># always a valid CodeReview object</span></div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── MCP INTRO ── -->
+      <div class="ag-section" id="mcp-intro">
+        <span class="ag-eyebrow">MCP</span>
+        <h2 class="ag-title">Model Context Protocol</h2>
+        <p class="ag-lead">MCP is the standard protocol that lets Claude connect to external tools, data sources, and services — without embedding integration code in your app. You run an MCP server; Claude calls it like a tool.</p>
+
+        <div class="warn-box" style="background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2)"><strong style="color:var(--accent)">Why it matters for agents:</strong> Without MCP, every agent integration (GitHub, Slack, your database, your filesystem) requires custom tool definitions in your code. With MCP, each integration is a standalone server. Swap, add, or version servers without touching the agent loop.</div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-top:1rem">
+          <table class="trigger-table" style="font-size:.87rem">
+            <thead><tr><th>Approach</th><th>How it works</th><th>Best for</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Native tool_use</strong></td><td>Tool definitions live in your Python/JS code alongside the API call</td><td>Simple, project-specific tools that won't be reused</td></tr>
+              <tr><td><strong>MCP server</strong></td><td>Separate process exposes tools over a standard protocol; any Claude client connects</td><td>Reusable integrations: GitHub, databases, file systems, internal APIs</td></tr>
+              <tr><td><strong>Claude Code built-in</strong></td><td>Claude Code ships with filesystem, bash, browser tools out of the box</td><td>Day-to-day development — no setup needed</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .7rem">MCP servers worth knowing</h3>
+        <div class="fw-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="fw-card">
+            <div class="fw-name">filesystem</div>
+            <span class="fw-tag best">Built-in</span>
+            <div class="fw-desc">Read, write, list files on your local machine. Pre-configured in Claude Code — no setup.</div>
+          </div>
+          <div class="fw-card">
+            <div class="fw-name">fetch / browser</div>
+            <span class="fw-tag best">Built-in</span>
+            <div class="fw-desc">Fetch URLs and interact with web pages. Useful for doc lookup, live API testing, scraping.</div>
+          </div>
+          <div class="fw-card">
+            <div class="fw-name">GitHub</div>
+            <span class="fw-tag good">Community</span>
+            <div class="fw-desc">Read PRs, issues, repos. Lets agents comment on PRs, check CI status, manage branches.</div>
+          </div>
+          <div class="fw-card">
+            <div class="fw-name">Slack / Gmail</div>
+            <span class="fw-tag good">Community</span>
+            <div class="fw-desc">Send messages, read threads, search channels. Wire PM agents into team communication.</div>
+          </div>
+          <div class="fw-card">
+            <div class="fw-name">PostgreSQL / SQLite</div>
+            <span class="fw-tag good">Community</span>
+            <div class="fw-desc">Run queries against your database. The agent reads schema, writes SQL, verifies results.</div>
+          </div>
+          <div class="fw-card">
+            <div class="fw-name">Custom</div>
+            <span class="fw-tag complex">Build it</span>
+            <div class="fw-desc">Wrap any internal API, CLI tool, or service as MCP. Python SDK takes ~30 lines of code.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── MCP CONFIGURE ── -->
+      <div class="ag-section" id="mcp-configure">
+        <span class="ag-eyebrow">MCP</span>
+        <h2 class="ag-title">Configure MCP servers</h2>
+        <p class="ag-lead">MCP servers are configured in a JSON file. Claude Code reads this on startup and makes all listed servers available as tools automatically.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">~/.claude/claude_desktop_config.json — global config</span></div>
+          <div class="code-body">{
+  <span class="c-str">"mcpServers"</span>: {
+    <span class="c-comment">// Local filesystem access (built-in, usually auto-configured)</span>
+    <span class="c-str">"filesystem"</span>: {
+      <span class="c-str">"command"</span>: <span class="c-str">"npx"</span>,
+      <span class="c-str">"args"</span>: [<span class="c-str">"-y"</span>, <span class="c-str">"@modelcontextprotocol/server-filesystem"</span>, <span class="c-str">"/Users/you/projects"</span>]
+    },
+    <span class="c-comment">// GitHub — needs a personal access token</span>
+    <span class="c-str">"github"</span>: {
+      <span class="c-str">"command"</span>: <span class="c-str">"npx"</span>,
+      <span class="c-str">"args"</span>: [<span class="c-str">"-y"</span>, <span class="c-str">"@modelcontextprotocol/server-github"</span>],
+      <span class="c-str">"env"</span>: { <span class="c-str">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="c-str">"ghp_..."</span> }
+    },
+    <span class="c-comment">// Your own internal API server (see next section)</span>
+    <span class="c-str">"my-api"</span>: {
+      <span class="c-str">"command"</span>: <span class="c-str">"python"</span>,
+      <span class="c-str">"args"</span>: [<span class="c-str">"/path/to/mcp_server.py"</span>]
+    }
+  }
+}</div>
+        </div>
+
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">.claude/mcp.json — project-level config (overrides global)</span></div>
+          <div class="code-body">{
+  <span class="c-str">"mcpServers"</span>: {
+    <span class="c-str">"project-db"</span>: {
+      <span class="c-str">"command"</span>: <span class="c-str">"python"</span>,
+      <span class="c-str">"args"</span>: [<span class="c-str">"scripts/db_mcp_server.py"</span>],
+      <span class="c-str">"env"</span>: { <span class="c-str">"DATABASE_URL"</span>: <span class="c-str">"postgresql://localhost/mydb"</span> }
+    }
+  }
+}</div>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">🔌</div>
+          <div class="apply-body">
+            <h4>Verify your MCP servers are connected</h4>
+            <p>In Claude Code, run <code>/mcp</code> to list all connected servers and their available tools. If a server isn't showing, check the config path and that the command is installed (<code>npx</code>, <code>python</code>, etc.).</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ag-divider">
+
+      <!-- ── MCP CUSTOM SERVER ── -->
+      <div class="ag-section" id="mcp-custom">
+        <span class="ag-eyebrow">MCP</span>
+        <h2 class="ag-title">Build a custom MCP server</h2>
+        <p class="ag-lead">If you have an internal API, CLI tool, or data source you want Claude to use, wrap it as an MCP server. The Python SDK makes this ~30 lines of code.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">mcp_server.py — minimal custom server</span></div>
+          <div class="code-body">from mcp.server.fastmcp import FastMCP
+import httpx
+
+mcp = FastMCP(<span class="c-str">"my-internal-api"</span>)
+
+<span class="c-comment"># Each @mcp.tool() becomes a callable tool inside Claude</span>
+@mcp.tool()
+def get_sprint_tasks(team: str) -> list[dict]:
+    <span class="c-str">"""Fetch active sprint tasks for a team from the internal tracker."""</span>
+    resp = httpx.get(f<span class="c-str">"https://tracker.internal/api/sprint/{team}"</span>)
+    return resp.json()[<span class="c-str">"tasks"</span>]
+
+@mcp.tool()
+def create_ticket(title: str, description: str, priority: str = <span class="c-str">"medium"</span>) -> dict:
+    <span class="c-str">"""Create a new ticket in the internal tracker."""</span>
+    resp = httpx.post(<span class="c-str">"https://tracker.internal/api/tickets"</span>,
+        json={<span class="c-str">"title"</span>: title, <span class="c-str">"description"</span>: description, <span class="c-str">"priority"</span>: priority})
+    return resp.json()
+
+@mcp.resource(<span class="c-str">"docs://{page}"</span>)
+def get_doc_page(page: str) -> str:
+    <span class="c-str">"""Serve internal documentation pages as MCP resources."""</span>
+    return (Path(<span class="c-str">"docs"</span>) / f<span class="c-str">"{page}.md"</span>).read_text()
+
+if __name__ == <span class="c-str">"__main__"</span>:
+    mcp.run()  <span class="c-comment"># stdio transport — Claude Code connects automatically</span></div>
+        </div>
+
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">install</span></div>
+          <div class="code-body"><span class="c-accent">pip install</span> mcp fastmcp httpx
+
+<span class="c-comment"># Test standalone before wiring into Claude</span>
+<span class="c-accent">python</span> mcp_server.py
+
+<span class="c-comment"># Then add to .claude/mcp.json and Claude picks it up on next start</span></div>
+        </div>
+
+        <h3 style="font-size:1rem;font-weight:700;margin:1.5rem 0 .7rem">MCP in an agent loop</h3>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem">When you register an MCP server, its tools appear alongside native <code>tool_use</code> in the agent response. The agent calls them the same way — no extra code required.</p>
+
+        <div class="code-block">
+          <div class="code-hd"><div class="dots"><s></s><s></s><s></s></div><span class="code-fname">agent_with_mcp.py</span></div>
+          <div class="code-body">import anthropic
+
+client = anthropic.Anthropic()
+
+<span class="c-comment"># No tool definitions needed — MCP servers inject their tools automatically</span>
+<span class="c-comment"># when using Claude Code. For the raw API, use the MCP client SDK:</span>
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+async def run_agent_with_mcp(goal: str):
+    server_params = StdioServerParameters(
+        command=<span class="c-str">"python"</span>, args=[<span class="c-str">"mcp_server.py"</span>]
+    )
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+
+            <span class="c-comment"># List available tools from the MCP server</span>
+            tools = await session.list_tools()
+            tool_defs = [t.model_dump() for t in tools.tools]
+
+            response = client.messages.create(
+                model=<span class="c-str">"claude-sonnet-4-6"</span>,
+                max_tokens=<span class="c-accent">4096</span>,
+                tools=tool_defs,
+                messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: goal}]
+            )
+            return response</div>
+        </div>
+
+        <div class="apply-box">
+          <div class="apply-icon">⚡</div>
+          <div class="apply-body">
+            <h4>Apply it — scaffold an MCP server with Claude</h4>
+            <p>Describe your internal tool or API and ask Claude to scaffold the MCP server: <code>"build an MCP server for our internal Jira API — tools: get_sprint, create_ticket, update_status. Base URL is https://jira.internal."</code> Then add it to <code>.claude/mcp.json</code>.</p>
+          </div>
         </div>
       </div>
 
