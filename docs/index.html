@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
-.feature-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,1.8vw,1.4rem);margin-top:clamp(2rem,4vw,3rem)}
+.feature-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(1rem,1.8vw,1.4rem);margin-top:clamp(2rem,4vw,3rem)}
 @media(max-width:768px){.feature-cards{grid-template-columns:1fr}}
 .feat-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-dim);display:grid;place-items:center;margin-bottom:1rem;font-size:1.4rem}
 .feat-title{font-size:1.15rem;font-weight:700;margin-bottom:.4rem}
@@ -35,10 +35,10 @@
   <div class="nav-links">
     <a href="index.html" class="active">Home</a>
     <a href="skills.html" class="hide-sm">Skills</a>
-    <a href="tools.html" class="hide-sm">Tools</a>
-    <a href="patterns.html" class="hide-sm">Patterns</a>
-    <a href="guide.html" class="hide-sm">Guide</a>
     <a href="claude.html" class="hide-sm">Claude</a>
+    <a href="patterns.html" class="hide-sm">Patterns</a>
+    <a href="tools.html" class="hide-sm">Tools</a>
+    <a href="guide.html" class="hide-sm">Guide</a>
     <a href="https://github.com/majidraza1228/claude-skills" class="nav-gh" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </nav>
@@ -110,6 +110,12 @@
         <div class="feat-title">Multi-tool support</div>
         <div class="feat-body">Claude Code, Cursor, VS Code + Copilot (Cline/Continue), Codex, Windsurf, Gemini CLI. One export script, six outputs.</div>
         <a href="tools.html" class="feat-link">See setup guides →</a>
+      </div>
+      <div class="card fade-up">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-title">Claude best practices</div>
+        <div class="feat-body">Sub-agents, MCP, workflow scripts, memory, hooks, and eval harnesses — Claude-specific patterns with real examples and the playbook skills wired into each.</div>
+        <a href="claude.html" class="feat-link">Explore Claude →</a>
       </div>
     </div>
   </div>
@@ -183,10 +189,10 @@
     <a href="index.html" class="footer-brand">AI-Powered Dev & PM Playbook</a>
     <div class="footer-links">
       <a href="skills.html">Skills</a>
-      <a href="tools.html">Tools</a>
-      <a href="patterns.html">Patterns</a>
-      <a href="guide.html">Guide</a>
       <a href="claude.html">Claude</a>
+      <a href="patterns.html">Patterns</a>
+      <a href="tools.html">Tools</a>
+      <a href="guide.html">Guide</a>
       <a href="https://github.com/majidraza1228/claude-skills" target="_blank" rel="noopener">GitHub</a>
     </div>
     <span class="footer-copy">MIT License</span>
