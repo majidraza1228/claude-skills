@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 .tool-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.tool-header .doc-open-btn{margin-left:auto}
 .tool-icon{font-size:2.2rem;line-height:1}
 .tool-header-text h2{font-size:1.6rem;margin-bottom:.2rem}
 .tool-header-text p{font-size:.95rem;color:var(--text-secondary)}
@@ -24,7 +25,11 @@
 .step-dot{width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1.5px solid rgba(34,197,94,.3);display:grid;place-items:center;font-size:.7rem;font-weight:700;color:var(--accent);flex-shrink:0;margin-top:.15rem}
 .cmp-table .cmp-row{grid-template-columns:1.6fr 1fr 1fr 1fr 1fr 1fr 1fr}
 @media(max-width:900px){.cmp-table{overflow-x:auto;display:block}.cmp-row{min-width:700px}}
+@media(max-width:600px){.tool-header{flex-wrap:wrap}.tool-header .doc-open-btn{margin-left:0;width:100%;justify-content:center;margin-top:.5rem}}
 </style>
+<link rel="stylesheet" href="doc-modal.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+<script src="doc-modal.js" defer></script>
 </head>
 <body>
 
@@ -66,6 +71,8 @@
           <h2>Claude Code <span class="tool-badge">Most features</span></h2>
           <p>Native auto-routing — skills load automatically from natural language. No @mentions needed.</p>
         </div>
+      
+        <a href="claude-code-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'claude-code-setup.md', 'Setup — Claude Code')">View setup guide →</a>
       </div>
       <div class="tool-grid">
         <div>
@@ -136,6 +143,8 @@
           <h2>Cursor <span class="tool-badge">Full support</span></h2>
           <p>Skills export as <code style="font-size:.9em">.mdc</code> rules in <code style="font-size:.9em">.cursor/rules/</code>. @mention in chat to activate.</p>
         </div>
+      
+        <a href="cursor-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'cursor-setup.md', 'Setup — Cursor')">View setup guide →</a>
       </div>
       <div class="tool-grid">
         <div>
@@ -175,6 +184,8 @@
           <h2>VS Code + Copilot <span class="tool-badge">3 options</span></h2>
           <p>Works with GitHub Copilot, Cline, and Continue. Each loads skills differently.</p>
         </div>
+      
+        <a href="vscode-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'vscode-setup.md', 'Setup — VS Code + Copilot')">View setup guide →</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:1.5rem">
         <div class="card" style="border-color:rgba(34,197,94,.2)">
@@ -237,6 +248,8 @@ Review this function for issues</div>
           <h2>OpenAI Codex <span class="tool-badge">Full support</span></h2>
           <p>Skills export as playbooks in <code style="font-size:.9em">.codex/playbooks/</code>. Reference them in task descriptions.</p>
         </div>
+      
+        <a href="codex-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'codex-setup.md', 'Setup — OpenAI Codex')">View setup guide →</a>
       </div>
       <div class="tool-grid">
         <div>
@@ -274,6 +287,8 @@ to audit this endpoint"</span></div>
           <h2>Windsurf <span class="tool-badge">Cascade rules</span></h2>
           <p>Skills export as Cascade rules in <code style="font-size:.9em">.windsurf/rules/</code>. Prompt Cascade to follow a rule.</p>
         </div>
+      
+        <a href="windsurf-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'windsurf-setup.md', 'Setup — Windsurf')">View setup guide →</a>
       </div>
       <div class="tool-grid">
         <div>
@@ -311,6 +326,8 @@ to audit this endpoint"</span></div>
           <h2>Gemini CLI <span class="tool-badge">Slash commands</span></h2>
           <p>Skills export to <code style="font-size:.9em">.gemini/skills/</code>. Invoke with <code style="font-size:.9em">/skill-name</code> or describe naturally.</p>
         </div>
+      
+        <a href="gemini-cli-setup.md" class="doc-open-btn" onclick="return openDoc(event, 'gemini-cli-setup.md', 'Setup — Gemini CLI')">View setup guide →</a>
       </div>
       <div class="tool-grid">
         <div>
