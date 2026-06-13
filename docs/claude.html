@@ -120,6 +120,8 @@
 
     <!-- STICKY SIDEBAR -->
     <aside class="agentic-sidebar">
+      <div class="as-section-label">What's new</div>
+      <a class="as-item" href="#whats-new" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">Last 2 weeks</div></a>
       <div class="as-section-label">Foundations</div>
       <a class="as-item" href="#what-is-agentic" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">What is agentic coding</div></a>
       <a class="as-item" href="#agent-loop" onclick="return sbScroll(event,this)"><div class="as-dot"></div><div class="as-label">The agent loop</div></a>
@@ -154,6 +156,105 @@
 
     <!-- MAIN CONTENT -->
     <div>
+
+      <!-- ────────── WHAT'S NEW (last 2 weeks) ──────────
+           HOW TO UPDATE THIS SECTION:
+             Option 1 — in Claude Code, run:  /update-whats-new
+             Option 2 — manual: replace everything between
+               <!-- WHATS-NEW:START --> and <!-- WHATS-NEW:END -->
+             Sources:
+               • git log --since="2 weeks ago" --pretty=format:"%h %ad %s" --date=short
+               • https://www.anthropic.com/news
+               • https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md
+      ─────────────────────────────────────────────── -->
+      <!-- WHATS-NEW:START -->
+      <div class="ag-section" id="whats-new">
+        <span class="ag-eyebrow">What's new — last 2 weeks (May 30 → Jun 13, 2026)</span>
+        <h2 class="ag-title">Latest Claude updates for agentic dev</h2>
+        <p class="ag-lead">Recent model releases, Claude Code shifts, and additions to this playbook — with a quick adoption checklist for devs and PMs.</p>
+
+        <!-- HEADLINE: Opus 4.8 -->
+        <div class="card" style="border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04);padding:1.5rem;margin-top:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+            <div>
+              <span class="tool-badge" style="background:var(--accent);color:var(--on-accent)">Headline release</span>
+              <h3 style="font-size:1.2rem;margin:.5rem 0 .3rem">Claude Opus 4.8 — released May 28</h3>
+              <div style="font-size:.85rem;color:var(--text-secondary);font-family:monospace">claude-opus-4-8</div>
+            </div>
+            <a href="https://anthropic.com/news/claude-opus-4-8" target="_blank" rel="noopener" class="btn-outline" style="white-space:nowrap;font-size:.85rem;padding:.4em 1em">Announcement ↗</a>
+          </div>
+          <ul style="font-size:.92rem;line-height:1.7;margin-top:1rem;padding-left:1.2rem">
+            <li><strong>~4× less likely</strong> to overlook flaws in written code vs Opus 4.7</li>
+            <li><strong>Dynamic workflows</strong> — hundreds of parallel sub-agents in a single session, for codebase-scale migrations</li>
+            <li><strong>More efficient tool calling</strong> — fewer steps for the same intelligence; better at carrying context across long sessions</li>
+            <li><strong>84% on Online-Mind2Web</strong> browser-agent benchmark (beats Opus 4.7 and competing models)</li>
+            <li><strong>Fast mode is 3× cheaper</strong> — now $10 input / $50 output per million tokens; standard pricing unchanged ($5 / $25)</li>
+          </ul>
+          <div class="apply-box" style="margin-top:1.2rem">
+            <div class="apply-icon">⚡</div>
+            <div class="apply-body">
+              <h4>Adopt this week</h4>
+              <p>Bump orchestrators and planners to <code>claude-opus-4-8</code>. Keep Sonnet 4.6 for high-volume sub-agents. Re-run your eval harness before merging the bump — 4.8 flags more honest uncertainty, so some eval prompts may need updated golden outputs.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANTHROPIC NEWS TABLE -->
+        <h3 style="font-size:1rem;font-weight:700;margin:2rem 0 .8rem">Other Anthropic updates</h3>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table" style="font-size:.87rem">
+            <thead><tr><th style="width:5.5rem">Date</th><th>Update</th><th>Why it matters for dev/PM</th></tr></thead>
+            <tbody>
+              <tr><td>Jun 12</td><td><a href="https://anthropic.com/news/anthropic-public-record" target="_blank" rel="noopener">First Anthropic Public Record</a></td><td>Trust & safety signals for enterprise procurement</td></tr>
+              <tr><td>Jun 12</td><td><a href="https://anthropic.com/news/tcs-anthropic-partnership" target="_blank" rel="noopener">TCS partnership</a></td><td>Regulated-industry deployment reference patterns</td></tr>
+              <tr><td>Jun 11</td><td><a href="https://anthropic.com/news/dxc-anthropic-alliance" target="_blank" rel="noopener">DXC alliance</a></td><td>Bank / airline integration playbook signal</td></tr>
+              <tr><td>Jun 11</td><td><a href="https://anthropic.com/news/claude-corps" target="_blank" rel="noopener">Claude Corps fellowship</a></td><td>Early-career AI talent pipeline</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PLAYBOOK UPDATES TABLE -->
+        <h3 style="font-size:1rem;font-weight:700;margin:2rem 0 .8rem">New in this playbook</h3>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="trigger-table" style="font-size:.87rem">
+            <thead><tr><th style="width:5.5rem">Date</th><th>What</th><th>Jump to</th></tr></thead>
+            <tbody>
+              <tr><td>May 31</td><td><strong>obsidian-memory</strong> skill — persistent agent memory via Obsidian vault</td><td><a href="https://github.com/majidraza1228/claude-skills/tree/main/dev-pm-skills/obsidian-memory" target="_blank" rel="noopener">dev-pm-skills/ ↗</a></td></tr>
+              <tr><td>May 30</td><td>Claude workflow scripts — Deep Research, Startup Forge, Branding</td><td><a href="#workflow-examples" onclick="return sbScroll(event,this)">Workflows §</a></td></tr>
+              <tr><td>May 30</td><td>Sub-agent examples — PR review pipeline, sprint planning, codebase onboarding, nightly CI</td><td><a href="#subagents-examples" onclick="return sbScroll(event,this)">Sub-agents §</a></td></tr>
+              <tr><td>May 30</td><td>MCP section — configure servers + build a custom MCP server</td><td><a href="#mcp-intro" onclick="return sbScroll(event,this)">MCP §</a></td></tr>
+              <tr><td>May 30</td><td>Architecting AI Memory — lifecycle, file structure, multi-agent sharing</td><td><a href="#memory-architecture" onclick="return sbScroll(event,this)">Memory §</a></td></tr>
+              <tr><td>May 30</td><td>Persona-based Guide page (Developer / PM / User)</td><td><a href="guide.html">guide.html</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ADOPTION CHECKLIST -->
+        <h3 style="font-size:1rem;font-weight:700;margin:2rem 0 .8rem">How to adopt this week</h3>
+        <div class="tool-grid">
+          <div>
+            <div class="tool-section-title">For developers</div>
+            <ol style="font-size:.92rem;line-height:1.75;padding-left:1.2rem;margin-top:.6rem">
+              <li>Switch orchestrator code to <code>claude-opus-4-8</code>; keep Sonnet 4.6 for sub-agents</li>
+              <li>Install the new <code>obsidian-memory</code> skill if you need agent state across sessions</li>
+              <li>Read the Sub-agents section below — try the PR review pipeline pattern on one real PR</li>
+              <li>Re-run your eval harness against 4.8 before merging the model bump</li>
+            </ol>
+          </div>
+          <div>
+            <div class="tool-section-title">For PMs</div>
+            <ol style="font-size:.92rem;line-height:1.75;padding-left:1.2rem;margin-top:.6rem">
+              <li>Schedule <code>/team-digest</code> daily with <code>/schedule</code> for automated sprint summaries</li>
+              <li>Walk the persona-based <a href="guide.html">Guide</a> with one new teammate this week</li>
+              <li>Adopt the workflow scripts pattern for recurring research and planning tasks</li>
+              <li>Share the Anthropic Public Record link upward as a procurement / trust signal</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <!-- WHATS-NEW:END -->
+
+      <hr class="ag-divider">
 
       <!-- ── WHAT IS AGENTIC CODING ── -->
       <div class="ag-section" id="what-is-agentic">

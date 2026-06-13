@@ -22,7 +22,7 @@ Project-local skills take precedence over global ones when names collide.
 The install script symlinks skills from this repo so any changes to source propagate automatically.
 
 ```bash
-# Install all 24 skills globally
+# Install all 25 dev/PM skills globally
 ./scripts/install-skills.sh --global
 
 # Install all skills for the current project only

@@ -162,7 +162,7 @@ The same `SKILL.md` files work across every major AI coding tool. The skill cont
 ### Quick install
 
 ```bash
-# Claude Code — install all 24 skills globally
+# Claude Code — install all 25 dev/PM skills globally
 ./scripts/install-skills.sh --global
 
 # Export for any other tool
@@ -190,7 +190,7 @@ Calude-skills/
 │   ├── codex-setup.md       ← OpenAI Codex
 │   ├── windsurf-setup.md    ← Windsurf
 │   └── gemini-cli-setup.md  ← Gemini CLI
-├── dev-pm-skills/                   ← Developer & PM skills (24 skills)
+├── dev-pm-skills/                   ← Developer & PM skills (25 skills)
 │   ├── code-review/SKILL.md
 │   ├── commit-message/SKILL.md
 │   ├── daily-checkin/               ← Agent PM skills

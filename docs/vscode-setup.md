@@ -22,7 +22,7 @@ Create `.github/copilot-instructions.md` in your repo root and paste skill bodie
 
 Copilot loads this file on every request. Keep it short — past ~300 lines attention degrades (Pattern 7).
 
-### On-demand (recommended for all 24 skills)
+### On-demand (recommended for all 25 skills)
 
 Export the skills to `.github/skills/`:
 
@@ -137,4 +137,4 @@ VS Code extensions don't have Claude Code's description-based auto-routing. The 
 | Routing | Automatic from natural language | Manual `#file:` or paste |
 | Install script | `./scripts/install-skills.sh` | `./scripts/export-skills.sh copilot` |
 | Agent PM (`/daily-checkin`) | Full support | Not supported |
-| All 24 skills | Full support | Content works, routing manual |
+| All 25 skills | Full support | Content works, routing manual |
